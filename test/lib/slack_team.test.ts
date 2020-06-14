@@ -19,11 +19,6 @@ describe('SlackTeam', () => {
     team.config = { support_channel_id: 'channel-1234' };
     const postMessageMock = jest.spyOn(team.client.chat, 'postMessage');
     const dialogOpenMock = jest.spyOn(team.client.dialog, 'open');
-    it('exists', (done) => {
-        expect(SlackTeam).toBeDefined();
-
-        done();
-    });
 
     describe('#postSupportRequest(message)', () => {
         const msg = 'This is my message';

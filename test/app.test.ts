@@ -1,7 +1,4 @@
 import request from 'supertest';
-
-jest.mock('@slack/web-api');
-
 import app from '../src/app';
 
 describe('GET /random-url', () => {

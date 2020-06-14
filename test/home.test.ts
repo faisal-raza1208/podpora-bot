@@ -1,5 +1,3 @@
-jest.mock('@slack/web-api');
-
 import request from 'supertest';
 import app from '../src/app';
 

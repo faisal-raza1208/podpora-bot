@@ -307,9 +307,4 @@ describe('POST /api/slack/interaction', () => {
             });
         });
     });
-
-    xit('creates a jira ticket', (done) => {
-
-        done();
-    });
 });
