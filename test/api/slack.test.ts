@@ -157,12 +157,12 @@ describe('POST /api/slack/event', () => {
                     return done(err);
                 }
                 expect(logInfoSpy).toHaveBeenCalled();
-                const log_args = JSON.stringify(logInfoSpy.mock.calls[0])
+                const log_args = JSON.stringify(logInfoSpy.mock.calls[0]);
                 expect(log_args).toContain('postEvent');
                 expect(log_args).not.toContain(params.token);
                 done();
             });
-        })
+        });
     });
 });
 

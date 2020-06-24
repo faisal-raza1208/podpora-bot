@@ -20,7 +20,7 @@ const commandHelpResponse = {
 };
 
 function sanitise_for_log(data: Record<string, unknown>): Record<string, unknown> {
-    let copy = Object.assign({}, data);
+    const copy = Object.assign({}, data);
 
     copy.token = 'sanitised';
     return copy;
