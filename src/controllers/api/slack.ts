@@ -133,8 +133,9 @@ function eventCallbackHandler(payload: MessageEventPayload, res: Response): Resp
         .then((issue_key: string) => {
             const jira_config = store.jiraConfig(team_id);
             const jira = new Jira(jira_config);
+            const comment = JSON.stringify(event)
 
-            jira.addComment(issue_key, event);
+            jira.addComment(issue_key, comment);
         }).catch((error) => {
             logger.error('eventCallbackHandler', 'eventToJiraIssueKey', error);
         });

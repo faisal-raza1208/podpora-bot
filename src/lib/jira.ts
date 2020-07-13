@@ -79,22 +79,16 @@ class Jira {
         return `${this.host}/browse/${issue.key}`;
     }
 
-    addComment(issue_key: string, event: MessageEvent): Promise<unknown> {
+    addComment(issue_key: string, comment: string): Promise<unknown> {
         return this.client.issueComments.addComment({
             issueIdOrKey: issue_key,
-            body: JSON.stringify(event)
+            body: comment
+        }).catch((err) => {
+            logger.error('addComment', err);
+            // TODO reject?
+            return Promise.resolve({ ok: false });
         });
-        //     .catch((err) => {
-        //     logger.error('addComment', err);
-        //     return Promise.reject({ ok: false });
-        // });
     }
-}
-
-interface MessageEvent {
-    thread_ts: string,
-    ts: string,
-    type: string
 }
 
 export {
