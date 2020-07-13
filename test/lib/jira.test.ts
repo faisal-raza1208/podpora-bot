@@ -140,20 +140,20 @@ describe('Jira', () => {
     describe('#addComment', () => {
         it('logs the error', (done) => {
             nock('https://example.com')
-                .post(`/rest/api/2/issue/issue-key/comment`)
+                .post('/rest/api/2/issue/issue-key/comment')
                 .reply(404);
 
 
             jira.addComment('issue-key', 'comment')
                 .then((res) => {
-                    expect(res).toEqual({ ok: false })
+                    expect(res).toEqual({ ok: false });
                     expect(logErrorSpy).toHaveBeenCalled();
                     const logger_call = logErrorSpy.mock.calls[0].toString();
                     expect(logger_call).toContain('issue-key');
                     expect(logger_call).toContain('addComment');
 
-                    done()
-                })
+                    done();
+                });
         });
     });
 });

@@ -124,7 +124,10 @@ const support = {
     },
 
     issueKey(team_id: string, channel_id: string, message_id: string): Promise<string> {
-        return support.fetch([team_id, channel_id, message_id].join(','));
+        return support.fetch([team_id, channel_id, message_id].join(','))
+            .then((val) => {
+                return Promise.resolve(val.split(',').pop() as string);
+            });
     }
 };
 
