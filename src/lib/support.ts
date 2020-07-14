@@ -134,8 +134,12 @@ const support = {
             });
     },
 
-    addFileToJiraIssue(jira: Jira, event: ChannelThreadFileShareEvent): void {
-        support.issueKey(event.team, event.channel, event.thread_ts)
+    addFileToJiraIssue(
+        slack: SlackTeam,
+        jira: Jira,
+        event: ChannelThreadFileShareEvent
+    ): void {
+        support.issueKey(slack.id, event.channel, event.thread_ts)
             .then((issue_key: string) => {
                 const comment = fileShareEventToIssueComment(event);
                 jira.addComment(issue_key, comment);

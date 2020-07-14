@@ -166,9 +166,12 @@ function eventCallbackHandler(payload: EventCallbackPayload, res: Response): Res
     const { event, team_id } = payload;
 
     if (isChannelThreadFileShareEvent(event)) {
+        const slack_config = store.slackTeamConfig(team_id);
+        const slack_team = new SlackTeam(slack_config);
         const jira_config = store.jiraConfig(team_id);
         const jira = new Jira(jira_config);
-        support.addFileToJiraIssue(jira, event);
+
+        support.addFileToJiraIssue(slack_team, jira, event);
     }
 
     return res.json({});
