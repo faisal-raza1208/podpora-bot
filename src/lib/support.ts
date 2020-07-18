@@ -101,9 +101,8 @@ const support = {
         thread: SlackMessage
     ): Promise<SlackMessage> {
         const msg_text =
-            'Jira ticket created! \n' +
-            'Please keep an eye on ticket status to see when it is done! \n' +
-            `${url}`;
+            `${url}\n` +
+            `We will post for you all updates on this thread.`;
 
         return slack_team.postOnThread(msg_text, thread)
             .then((response) => {

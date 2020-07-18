@@ -90,7 +90,7 @@ class SlackTeam {
         const message_id = message.ts;
         const thread_ts = message.thread_ts;
         return `https://${domain}.slack.com/archives/` +
-            `${channel_id}/p${message_id}??thread_ts=${thread_ts}&cid=${channel_id}`;
+            `${channel_id}/p${message_id}?thread_ts=${thread_ts}&cid=${channel_id}`;
     }
 }
 
