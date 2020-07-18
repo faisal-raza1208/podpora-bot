@@ -102,7 +102,7 @@ const support = {
     ): Promise<SlackMessage> {
         const msg_text =
             `${url}\n` +
-            `We will post for you all updates on this thread.`;
+            'We will post for you all updates on this thread.';
 
         return slack_team.postOnThread(msg_text, thread)
             .then((response) => {
@@ -202,7 +202,7 @@ const support = {
         const args = text.trim().split(/\s+/);
         if (support.requestTypes().includes(args[0])) {
             support.showForm(slack_team, args[0] as SupportRequests, trigger_id);
-            return res.json({});
+            return res.status(200).send();
         }
 
         return res.json(commandHelpResponse);

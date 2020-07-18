@@ -25,7 +25,7 @@ function handleCallbackEvent(payload: EventCallbackPayload, res: Response): Resp
         support.addFileToJiraIssue(slack_team, jira, event);
     }
 
-    return res.json({});
+    return res.status(200).send();
 }
 
 function eventHandler(payload: PostEventPayloads, res: Response): Response {

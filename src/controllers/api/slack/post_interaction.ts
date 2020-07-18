@@ -49,5 +49,6 @@ export const postInteraction = (req: Request, res: Response): void => {
     } catch (error) {
         logger.error('postInteraction', error, req.body);
     }
-    res.json({});
+
+    res.status(200).send();
 };
