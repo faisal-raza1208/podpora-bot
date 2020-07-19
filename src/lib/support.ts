@@ -4,14 +4,12 @@ import {
     WebAPICallResult
 } from '@slack/web-api';
 import logger from '../util/logger';
-import { templates as form_templates } from './slack/form_templates';
+import { config } from './config';
 import {
     SlackUser,
     SlackMessage,
     SlackTeam
 } from './slack_team';
-import supportMessageText from './slack/support_message_text';
-import issueParams from './jira_create_issue_params';
 import { Jira } from './jira';
 import redis_client from '../util/redis_client';
 import {
@@ -22,28 +20,9 @@ import {
     isSlackImageFile
 } from './slack/api_interfaces';
 
-const support_requests = ['bug', 'data'] as const;
-type SupportRequests = typeof support_requests[number];
-
-interface BugSubmission {
-    title: string,
-    description: string
-    currently: string,
-    expected: string
+interface Submission {
+    [index: string]: string;
 }
-
-interface DataSubmission {
-    title: string,
-    description: string
-}
-
-type Submission = BugSubmission | DataSubmission;
-
-const commandHelpResponse = {
-    text: '👋 Need help with support bot?\n\n'
-        + '> Submit a request for data:\n>`/support data`\n\n'
-        + '> Submit a bug report:\n>`/support bug`'
-};
 
 function fileShareEventToIssueComment(
     event: ChannelThreadFileShareEvent,
@@ -52,6 +31,23 @@ function fileShareEventToIssueComment(
     const files_str = event.files.map(slackFileToText).join('\n\n');
 
     return `${event.text}\n\n${files_str}\n \n${url}\n`;
+}
+
+interface SlackSupportCommand {
+    name: string,
+    desc: string,
+    example: string
+}
+
+function supportCommandsNames(commands: Array<SlackSupportCommand>): Array<string> {
+    return commands.map((cmd) => { return cmd.name; });
+}
+
+function supportCommandsHelpText(commands: Array<SlackSupportCommand>): string {
+    return '👋 Need help with support bot?\n\n' + commands.map(
+        (cmd) => {
+            return `> ${cmd.desc}:\n>\`${cmd.example}\``;
+        }).join('\n\n');
 }
 
 // Unfortunaly preview slack images does not work as explained here:
@@ -79,13 +75,12 @@ function slackFileToText(file: SlackFiles): string {
 }
 
 const support = {
-    requestTypes(): ReadonlyArray<string> { return support_requests; },
     showForm(
         slack_team: SlackTeam,
-        request_type: SupportRequests,
+        request_type: string,
         trigger_id: string
     ): Promise<WebAPICallResult> {
-        const dialog: Dialog = form_templates[request_type];
+        const dialog: Dialog = config(slack_team).templates[request_type];
 
         return slack_team.showDialog(dialog, trigger_id)
             .catch((error) => {
@@ -120,9 +115,14 @@ const support = {
         user: SlackUser,
         request_type: string
     ): void {
-        const message_text = supportMessageText(submission, user, request_type);
+        const support_config = config(slack_team);
+        const message_text = support_config.supportMessageText(
+            submission, user, request_type
+        );
         const p1 = slack_team.postMessage(message_text, slack_team.support_channel_id);
-        const issue_params = issueParams(submission, user, request_type);
+        const issue_params = support_config.issueParams(
+            submission, user, request_type
+        );
         const p2 = jira.createIssue(issue_params);
 
         p1.then((message) => {
@@ -198,8 +198,10 @@ const support = {
     handleCommand(slack_team: SlackTeam, payload: PostCommandPayload, res: Response): Response {
         const { text, trigger_id } = payload;
         const args = text.trim().split(/\s+/);
-        if (support.requestTypes().includes(args[0])) {
-            support.showForm(slack_team, args[0] as SupportRequests, trigger_id);
+        const commands = config(slack_team).commands;
+        const requests_types = supportCommandsNames(commands);
+        if (requests_types.includes(args[0])) {
+            support.showForm(slack_team, args[0], trigger_id);
             return res.status(200).send();
         } else if (args[0] === 'ping') {
             res.json({
@@ -208,7 +210,9 @@ const support = {
             });
         }
 
-        return res.json(commandHelpResponse);
+        return res.json({
+            text: supportCommandsHelpText(commands)
+        });
     },
 
     handleDialogSubmission(
@@ -221,7 +225,7 @@ const support = {
         const { user, submission } = payload;
 
         support.createSupportRequest(
-            slack_team, jira, submission, user, request_type as SupportRequests
+            slack_team, jira, submission, user, request_type
         );
 
         return res;
@@ -230,9 +234,6 @@ const support = {
 
 export {
     fileShareEventToIssueComment,
-    BugSubmission,
-    DataSubmission,
     Submission,
-    SupportRequests,
     support
 };

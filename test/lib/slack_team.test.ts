@@ -6,8 +6,7 @@ import {
     SlackMessage,
     SlackTeam
 } from '../../src/lib/slack_team';
-import supportMessageText from '../../src/lib/slack/support_message_text';
-
+import { config } from '../../src/lib/config';
 const loggerSpy = jest.spyOn(logger, 'error').mockReturnValue({} as Logger);
 
 afterEach(() => {
@@ -19,12 +18,13 @@ describe('SlackTeam', () => {
         id: 'abc',
         support_channel_id: 'channel-1234',
         api_token: 'dummy api token',
-        domain: 'qwerty'
+        domain: 'qwerty',
+        support_config_name: 'default'
     };
     const team = new SlackTeam(team_config);
     const postMsgResponse = fixture('slack/chat.postMessage.response');
     const slack_message = postMsgResponse as SlackMessage;
-
+    const supportMessageText = config(team).supportMessageText;
     describe('#postMessage(message_text, channel_id)', () => {
         const submission = {
             title: 'title of reported bug',
