@@ -40,23 +40,13 @@ describe('POST /api/jira/event/:team_id', () => {
         }, done);
     });
 
-    describe('slack team not found', () => {
+    describe('slack team config not found', () => {
         const api_path = '/api/jira/event/BAD-TEAM-ID';
         const service = build_service(app, api_path);
         const params = {};
 
-        it('logs the event', (done) => {
-            expect.assertions(2);
-
-            service(params).expect(200).end((err) => {
-                if (err) {
-                    return done(err);
-                }
-                expect(logErrorSpy).toHaveBeenCalled();
-                const log_args = JSON.stringify(logErrorSpy.mock.calls[0]);
-                expect(log_args).toContain('postEvent');
-                done();
-            });
+        it('returns 200 OK', () => {
+            return service(params).expect(200);
         });
     });
 

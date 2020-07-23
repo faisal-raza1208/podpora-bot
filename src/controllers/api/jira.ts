@@ -61,42 +61,48 @@ function handleJiraIssueUpdate(
  *
  */
 export const postEvent = (req: Request, res: Response): void => {
-    try {
-        const { webhookEvent, issue, changelog } = req.body;
-        const team_id = req.params.team_id;
-        const slack_config = store.slackTeamConfig(team_id);
-        const slack_team = new SlackTeam(slack_config);
-        const jira_config = store.jiraConfig(team_id);
-        const jira = new Jira(jira_config);
-
-        if (webhookEvent === 'jira:issue_updated') {
-            const issue_key = jira.toKey(issue);
-
-            store.get(issue_key, (err, res) => {
-                if (err) {
-                    logger.error(err.message);
-                    return;
-                }
-                if (res === null) {
-                    logger.info(JSON.stringify(changelog));
-                    logger.info(JSON.stringify(issue));
-                    logger.error(`Slack thread not found for issue: ${issue_key}`);
-                    return;
-                }
-
-                const [, channel, ts] = res.split(',');
-                handleJiraIssueUpdate(
-                    slack_team,
-                    jira,
-                    issue,
-                    changelog,
-                    { channel, ts }
-                );
-            });
-        }
-    } catch (error) {
-        logger.error('postEvent', error, req.body);
+    // try {
+    const { webhookEvent, issue, changelog } = req.body;
+    const team_id = req.params.team_id;
+    const slack_config = store.slackTeamConfig(team_id);
+    if (!slack_config) {
+        logger.info(JSON.stringify(changelog));
+        logger.info(JSON.stringify(issue));
+        res.status(200).send();
+        return;
     }
+    const slack_team = new SlackTeam(slack_config);
+    const jira_config = store.jiraConfig(team_id);
+    const jira = new Jira(jira_config);
+
+    if (webhookEvent === 'jira:issue_updated') {
+        const issue_key = jira.toKey(issue);
+
+        store.get(issue_key, (err, res) => {
+            if (err) {
+                logger.error(err.message);
+                return;
+            }
+            if (res === null) {
+                logger.info(JSON.stringify(changelog));
+                logger.info(JSON.stringify(issue));
+                logger.error(`Slack thread not found for issue: ${issue_key}`);
+                return;
+            }
+
+            const [, channel, ts] = res.split(',');
+            handleJiraIssueUpdate(
+                slack_team,
+                jira,
+                issue,
+                changelog,
+                { channel, ts }
+            );
+        });
+    }
+    // } catch (error) {
+    //     logger.error('postEvent', error, req.body);
+    // }
 
     res.status(200).send();
 };
