@@ -173,7 +173,7 @@ const support = {
         support.issueKey(slack.id, event.channel, event.thread_ts)
             .then((issue_key: string) => {
                 const user_name = slack.userName(event.user);
-                const addComment = (name: string) => {
+                const addComment = (name: string): void => {
                     const comment = fileShareEventToIssueComment(
                         event,
                         slack.threadMessageUrl(event),
@@ -182,7 +182,7 @@ const support = {
                     jira.addComment(issue_key, comment);
                 };
                 user_name.then(addComment)
-                    .catch((error) => {
+                    .catch(() => {
                         addComment(event.user);
                     });
             }).catch((error) => {

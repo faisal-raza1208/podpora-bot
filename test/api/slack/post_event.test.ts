@@ -94,7 +94,7 @@ describe('POST /api/slack/event', () => {
                 it('add message as comment to Jira Issue', (done) => {
                     expect.assertions(2);
                     const getUserInfo = fixture('slack/users.info.response');
-                    const checkJiraComment = (body: string) => {
+                    const checkJiraComment = (body: string): void => {
                         expect(body).toContain('files.slack');
                         expect(body).toContain('Egon Spengler');
 

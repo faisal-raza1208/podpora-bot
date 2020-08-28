@@ -111,7 +111,7 @@ class Slack {
         }).then((response: WebAPICallResult) => {
             const user = response.user as UserProfile;
             return Promise.resolve(user.real_name);
-        }).catch((error) => {
+        }).catch(() => {
             throw new Error('Unexpected error #userName');
         });
     }

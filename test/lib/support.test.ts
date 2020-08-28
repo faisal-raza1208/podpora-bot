@@ -168,7 +168,7 @@ describe('#addFileToJiraIssue(slack, jira, event)', () => {
         it('add message as comment to Jira Issue with user id', (done) => {
             expect.assertions(1);
             const issue_key = 'foo-issue-key';
-            const checkJiraComment = (body: string) => {
+            const checkJiraComment = (body: string): void => {
                 expect(body).toContain('UHAV00MD0');
 
                 done();
