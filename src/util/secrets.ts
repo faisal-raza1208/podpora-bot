@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import redis, { RedisClient } from 'redis';
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() === 'test') {
     dotenv.config({ path: '.env.example' });
 } else if (fs.existsSync('.env')) {
     dotenv.config({ path: '.env' });
