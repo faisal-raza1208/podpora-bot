@@ -173,7 +173,7 @@ const support = {
         support.issueKey(slack.id, event.channel, event.thread_ts)
             .then((issue_key: string) => {
                 const user_name = slack.userName(event.user);
-                const addComment = (name: string) => {
+                const addComment = (name: string): void => {
                     const comment = fileShareEventToIssueComment(
                         event,
                         slack.threadMessageUrl(event),
@@ -182,7 +182,7 @@ const support = {
                     jira.addComment(issue_key, comment);
                 };
                 user_name.then(addComment)
-                    .catch((error) => {
+                    .catch(() => {
                         addComment(event.user);
                     });
             }).catch((error) => {
@@ -199,7 +199,7 @@ const support = {
             support.showForm(slack, args[0], trigger_id);
             return res.status(200).send();
         } else if (args[0] === 'ping') {
-            res.json({
+            return res.json({
                 response_type: 'ephemeral',
                 text: 'Pong!'
             });
