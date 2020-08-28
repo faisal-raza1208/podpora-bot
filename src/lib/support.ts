@@ -199,7 +199,7 @@ const support = {
             support.showForm(slack, args[0], trigger_id);
             return res.status(200).send();
         } else if (args[0] === 'ping') {
-            res.json({
+            return res.json({
                 response_type: 'ephemeral',
                 text: 'Pong!'
             });
