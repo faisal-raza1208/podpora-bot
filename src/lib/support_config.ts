@@ -9,7 +9,7 @@ interface IssueParams {
         summary: string,
         issuetype: { name: string },
         description: string,
-        labels: string
+        labels: Array<string>
     }
 }
 
@@ -149,7 +149,7 @@ Submitted by: ${user.name}`;
                 summary: title,
                 issuetype: { name: issue_type },
                 description: desc,
-                labels: 'support'
+                labels: ['support']
             }
         };
     },
@@ -283,7 +283,7 @@ Submitted by: ${user.name}`;
                 summary: title,
                 issuetype: { name: issue_type },
                 description: desc,
-                labels: 'support'
+                labels: ['support']
             }
         };
     },
