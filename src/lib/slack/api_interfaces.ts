@@ -52,7 +52,7 @@ interface UnknownSubmission extends Interaction {
 
 interface Shortcut extends Interaction {
     type: InteractionTypes.shortcut,
-    payload: string
+    trigger_id: string
 }
 
 interface DialogSubmission extends Interaction {
@@ -200,5 +200,6 @@ export {
     DialogSubmission,
     ViewSubmission,
     ViewSubmissionInputValue,
-    ViewSubmissionSelectValue
+    ViewSubmissionSelectValue,
+    Shortcut
 };

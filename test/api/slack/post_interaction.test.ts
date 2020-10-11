@@ -1,7 +1,8 @@
 import nock from 'nock';
 import { Logger } from 'winston';
-import { build_service, build_response, fixture } from '../../helpers';
+import { build_service, build_response, fixture, merge } from '../../helpers';
 import logger from '../../../src/util/logger';
+import feature from '../../../src/util/feature';
 import { store } from '../../../src/util/secrets';
 import {
     ViewSubmission,
@@ -441,20 +442,82 @@ describe('POST /api/slack/interaction', () => {
                 id: 'CHNBT34FJ',
                 name: 'foobar'
             },
-            payload: 'foo',
-            callback_id: '12345',
+            callback_id: 'foo bar',
             response_url: 'https://hooks.slack.com/app/response_url'
         };
 
-        const params = { payload: JSON.stringify(payload) };
+        function test_shortcut_with_modal(params: Record<string, unknown>): void {
+            const featureSpy = jest.spyOn(feature, 'is_enabled');
+            function modalsEnabled(name: string): boolean {
+                return name == 'slack_modals';
+            }
+
+            it('sends modal view to Slack', (done) => {
+                featureSpy.mockImplementationOnce(modalsEnabled);
+                nock('https://slack.com')
+                    .post('/api/views.open')
+                    .reply(200, { ok: true });
+
+                service(params).expect(200).end(done);
+            });
+
+            describe('response.body', () => {
+                featureSpy.mockImplementationOnce(modalsEnabled);
+                const response = build_response(service(params));
+
+                it('returns empty', (done) => {
+                    nock('https://slack.com')
+                        .post('/api/views.open')
+                        .reply(200, { ok: true });
+
+                    response((body: Record<string, unknown>) => {
+                        expect(body).toEqual({});
+                        done();
+                    }, done);
+                });
+            });
+        }
+
         it('returns 200 OK', (done) => {
             const logDebugSpy = jest.spyOn(logger, 'debug').mockReturnValue({} as Logger);
+            const params = { payload: JSON.stringify(payload) };
 
             service(params).expect(200).end((err) => {
                 expect(logErrorSpy).not.toHaveBeenCalled();
                 expect(logDebugSpy).toHaveBeenCalled();
 
                 done(err);
+            });
+        });
+
+        describe('callback_id: support_bug', () => {
+            const bug_payload = merge(payload, { callback_id: 'support_bug' });
+
+            test_shortcut_with_modal({ payload: JSON.stringify(bug_payload) })
+        });
+
+        describe('callback_id: support_data', () => {
+            const data_payload = merge(payload, { callback_id: 'support_data' });
+
+            test_shortcut_with_modal({ payload: JSON.stringify(data_payload) })
+        });
+
+        describe('callback_id: support_unknown-command', () => {
+            const shortcut_payload = merge(payload, { callback_id: 'support_unknown-command' });
+
+            it('returns 200 OK and log the callback id for debugging', (done) => {
+                const logDebugSpy = jest.spyOn(logger, 'debug').mockReturnValue({} as Logger);
+                const params = { payload: JSON.stringify(shortcut_payload) };
+
+                service(params).expect(200).end((err) => {
+                    const log_msg = logDebugSpy.mock.calls[0].toString();
+                    expect(logErrorSpy).not.toHaveBeenCalled();
+                    expect(logDebugSpy).toHaveBeenCalled();
+                    expect(log_msg).toContain('handleShortcut');
+                    expect(log_msg).toContain('support_unknown-command');
+
+                    done(err);
+                });
             });
         });
     });

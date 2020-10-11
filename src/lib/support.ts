@@ -15,6 +15,7 @@ import {
     PostCommandPayload,
     DialogSubmission,
     ViewSubmission,
+    Shortcut,
     ChannelThreadFileShareEvent,
     SlackUser,
     Submission
@@ -173,6 +174,24 @@ const support = {
         return res.json({
             text: config.commandsHelpText()
         });
+    },
+
+    handleShortcut(slack: Slack, params: Shortcut, res: Response): Response {
+        const { trigger_id, callback_id } = params;
+        const command_name = callback_id.split('_')[1];
+        const config = supportConfig(support.configName(slack));
+
+        if (commandsNames(config.commands).includes(command_name)) {
+            support.showForm(slack, command_name, trigger_id);
+        } else {
+            logger.debug(
+                'handleShortcut',
+                'Unexpected support shortcut',
+                callback_id
+            );
+        }
+
+        return res;
     },
 
     handleDialogSubmission(

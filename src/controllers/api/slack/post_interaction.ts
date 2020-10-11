@@ -11,7 +11,8 @@ import {
     DialogSubmission,
     ViewSubmission,
     InteractionTypes,
-    PostInteractionPayload
+    PostInteractionPayload,
+    Shortcut
 } from '../../../lib/slack/api_interfaces';
 
 function handleViewSubmission(params: ViewSubmission, res: Response): Response {
@@ -55,6 +56,24 @@ function handleDialogSubmission(params: DialogSubmission, res: Response): Respon
     throw new Error('Unexpected state param: ' + state);
 }
 
+function handleShortcut(params: Shortcut, res: Response): Response {
+    const { team, callback_id } = params;
+    const [type] = callback_id.split('_');
+    const slack_options = store.slackOptions(team.id);
+    const slack = new Slack(slack_options);
+
+    if (type === 'support') {
+        support.handleShortcut(slack, params, res);
+    }
+
+    logger.debug(
+        'shortcut: ' +
+        JSON.stringify(params)
+    );
+
+    return res;
+}
+
 function interactionHandler(params: PostInteractionPayload, res: Response): Response {
     if (params.type == InteractionTypes.dialog_submission) {
         return handleDialogSubmission(params as DialogSubmission, res);
@@ -65,11 +84,7 @@ function interactionHandler(params: PostInteractionPayload, res: Response): Resp
     }
 
     if (params.type == InteractionTypes.shortcut) {
-        logger.debug(
-            'shortcut' +
-            JSON.stringify(params)
-        );
-        return res;
+        return handleShortcut(params as Shortcut, res)
     }
 
     throw new Error('Unexpected interaction: ' + params.type);
