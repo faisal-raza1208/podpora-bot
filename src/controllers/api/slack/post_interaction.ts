@@ -66,8 +66,8 @@ function interactionHandler(params: PostInteractionPayload, res: Response): Resp
 
     if (params.type == InteractionTypes.shortcut) {
         logger.debug(
-            'shortcut',
-            JSON.stringify(sanitise_for_log(params))
+            'shortcut' +
+            JSON.stringify(params)
         );
         return res;
     }
