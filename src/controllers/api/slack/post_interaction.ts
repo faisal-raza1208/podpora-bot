@@ -64,12 +64,12 @@ function handleShortcut(params: Shortcut, res: Response): Response {
 
     if (type === 'support') {
         support.handleShortcut(slack, params, res);
+    } else {
+        logger.debug(
+            'shortcut: ' +
+            JSON.stringify(params)
+        );
     }
-
-    logger.debug(
-        'shortcut: ' +
-        JSON.stringify(params)
-    );
 
     return res;
 }
@@ -84,7 +84,7 @@ function interactionHandler(params: PostInteractionPayload, res: Response): Resp
     }
 
     if (params.type == InteractionTypes.shortcut) {
-        return handleShortcut(params as Shortcut, res)
+        return handleShortcut(params as Shortcut, res);
     }
 
     throw new Error('Unexpected interaction: ' + params.type);

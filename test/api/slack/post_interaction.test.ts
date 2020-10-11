@@ -493,13 +493,13 @@ describe('POST /api/slack/interaction', () => {
         describe('callback_id: support_bug', () => {
             const bug_payload = merge(payload, { callback_id: 'support_bug' });
 
-            test_shortcut_with_modal({ payload: JSON.stringify(bug_payload) })
+            test_shortcut_with_modal({ payload: JSON.stringify(bug_payload) });
         });
 
         describe('callback_id: support_data', () => {
             const data_payload = merge(payload, { callback_id: 'support_data' });
 
-            test_shortcut_with_modal({ payload: JSON.stringify(data_payload) })
+            test_shortcut_with_modal({ payload: JSON.stringify(data_payload) });
         });
 
         describe('callback_id: support_unknown-command', () => {
