@@ -11,7 +11,6 @@ import {
     viewInputVal,
     viewSelectedVal
 } from './slack_jira_helpers';
-import feature from './../util/feature';
 
 interface IssueParams {
     [index: string]: Record<string, unknown>;
@@ -122,13 +121,11 @@ Submitted by: ${user.name}`;
 
         labels.push('product');
 
-        if (feature.is_enabled('urgency_product_area_labels')) {
-            if (submission.urgency) {
-                labels.push(slugify(submission.urgency));
-            }
-            if (submission.product_area) {
-                labels.push(slugify(submission.product_area));
-            }
+        if (submission.urgency) {
+            labels.push(slugify(submission.urgency));
+        }
+        if (submission.product_area) {
+            labels.push(slugify(submission.product_area));
         }
 
         return {
