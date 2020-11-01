@@ -106,7 +106,7 @@ configs.default = {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         request_type: string,
     ): IssueParams {
-        const title: string = submission.title;
+        const title: string = submission.title as string;
         const board = 'IDEA';
         const issue_type = 'Idea';
         const desc = `${submission.description}
