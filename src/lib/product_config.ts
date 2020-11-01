@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import slugify from '@sindresorhus/slugify';
 import { View } from '@slack/web-api';
 import {
     SlackUser,
@@ -10,6 +11,7 @@ import {
     viewInputVal,
     viewSelectedVal
 } from './slack_jira_helpers';
+import feature from './../util/feature';
 
 interface IssueParams {
     [index: string]: Record<string, unknown>;
@@ -106,7 +108,7 @@ configs.default = {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         request_type: string,
     ): IssueParams {
-        const title: string = submission.title;
+        const title: string = submission.title as string;
         const board = 'IDEA';
         const issue_type = 'Idea';
         const desc = `${submission.description}
@@ -116,6 +118,18 @@ Product Area: ${submission.product_area}
 Urgency: ${submission.urgency}
 
 Submitted by: ${user.name}`;
+        let labels = [];
+
+        labels.push('product');
+
+        if (feature.is_enabled('urgency_product_area_labels')) {
+            if (submission.urgency) {
+                labels.push(slugify(submission.urgency));
+            }
+            if (submission.product_area) {
+                labels.push(slugify(submission.product_area));
+            }
+        }
 
         return {
             fields: {
@@ -123,7 +137,7 @@ Submitted by: ${user.name}`;
                 summary: title,
                 issuetype: { name: issue_type },
                 description: desc,
-                labels: ['product']
+                labels: labels
             }
         };
     },

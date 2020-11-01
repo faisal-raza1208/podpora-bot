@@ -80,14 +80,12 @@ function viewToSubmission(
 ): Submission {
     const values = view.state.values;
     const submission: Submission = {};
+    submission.title = viewInputVal('sl_title', values) as string;
+    submission.description = viewInputVal('ml_description', values) as string;
+
     if (request_type === 'bug') {
-        submission.title = viewInputVal('sl_title', values);
-        submission.description = viewInputVal('ml_description', values);
         submission.currently = viewInputVal('sl_currently', values);
         submission.expected = viewInputVal('sl_expected', values);
-    } else {
-        submission.title = viewInputVal('sl_title', values);
-        submission.description = viewInputVal('ml_description', values);
     }
 
     return submission;
@@ -181,7 +179,7 @@ configs.default = {
         user: SlackUser,
         request_type: string,
     ): IssueParams {
-        const title: string = submission.title;
+        const title: string = submission.title as string;
         const board = 'SUP';
         let issue_type: string;
         let desc: string;
@@ -320,7 +318,7 @@ configs.syft = {
         user: SlackUser,
         request_type: string,
     ): IssueParams {
-        const title: string = submission.title;
+        const title: string = submission.title as string;
         let board: string;
         let issue_type: string;
         let desc: string;
