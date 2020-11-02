@@ -57,7 +57,7 @@
       },
       "label": {
         "type": "plain_text",
-        "text": "Description *"
+        "text": "Problem & impact *"
       },
       "hint": {
         "type": "plain_text",
