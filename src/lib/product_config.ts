@@ -118,7 +118,7 @@ Product Area: ${submission.product_area}
 Urgency: ${submission.urgency}
 
 Submitted by: ${user.name}`;
-        let labels = [];
+        const labels = [];
 
         labels.push('product');
 
