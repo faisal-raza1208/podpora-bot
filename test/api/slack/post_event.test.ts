@@ -43,7 +43,7 @@ describe('POST /api/slack/event', () => {
                 type: 'event_callback',
                 subtype: 'not a file share',
                 team_id: 'T001',
-                event: { thread_ts: 'foo' }
+                event: { thread_ts: 'foo-thread-ts' }
             };
 
             it('will be ignored', () => {

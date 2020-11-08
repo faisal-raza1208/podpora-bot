@@ -4,7 +4,7 @@ const featureSpy = jest.spyOn(feature, 'is_enabled');
 import productConfig from '../../src/lib/product_config';
 
 describe('productConfig', () => {
-    const slack_user = { id: 'foo', name: 'Joe Doe' };
+    const slack_user = { id: 'foo-user-id', name: 'Joe Doe' };
     describe('default', () => {
         const config = productConfig('default');
         it('exists', () => {

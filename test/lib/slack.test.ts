@@ -37,7 +37,7 @@ describe('Slack', () => {
         };
         const request_type = 'bug';
         const message_text = supportMessageText(submission, user, request_type);
-        const channel_id = 'foo';
+        const channel_id = 'foo-channel-id';
 
         it('returns a Promise that resolves to SlackMessage', (done) => {
             expect.assertions(1);
