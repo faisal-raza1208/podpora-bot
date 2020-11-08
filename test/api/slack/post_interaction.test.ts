@@ -179,7 +179,7 @@ describe('POST /api/slack/interaction', () => {
                     'private_metadata': 'support_bug',
                     'user': {
                         'id': 'UHAV00MD0',
-                        'username': 'foo',
+                        'username': 'foo-username',
                         'name': 'bar',
                         'team_id': 'THS7JQ2RL'
                     },
@@ -228,7 +228,7 @@ describe('POST /api/slack/interaction', () => {
                     'private_metadata': 'support_data',
                     'user': {
                         'id': 'UHAV00MD0',
-                        'username': 'foo',
+                        'username': 'foo-username',
                         'name': 'bar',
                         'team_id': 'THS7JQ2RL'
                     },
@@ -326,9 +326,9 @@ describe('POST /api/slack/interaction', () => {
             },
             channel: {
                 id: 'CHNBT34FJ',
-                name: 'foobar'
+                name: 'foobar-channel'
             },
-            callback_id: 'foo bar',
+            callback_id: 'foo-callback-id',
             response_url: 'https://hooks.slack.com/app/response_url'
         };
 
@@ -423,9 +423,9 @@ describe('POST /api/slack/interaction', () => {
             },
             channel: {
                 id: 'CHNBT34FJ',
-                name: 'foobar'
+                name: 'foo-channel'
             },
-            callback_id: 'foo bar',
+            callback_id: 'foo-callback-id',
             response_url: 'https://hooks.slack.com/app/response_url'
         };
 

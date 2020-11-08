@@ -1,7 +1,7 @@
 import supportConfig from '../../src/lib/support_config';
 
 describe('supportConfig', () => {
-    const slack_user = { id: 'foo', name: 'Joe Doe' };
+    const slack_user = { id: 'foo-user-id', name: 'Joe Doe' };
     describe('default', () => {
         const config = supportConfig('default');
         it('exists', () => {
