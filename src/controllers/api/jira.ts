@@ -138,14 +138,15 @@ export const postEvent = (req: Request, res: Response): void => {
                     const slack_thread = { team, channel, ts };
                     handleStatusChange(issue, changelog, slack_thread);
                     handleAttachmentChange(issue, changelog, slack_thread);
-                    // handleLinksChange(issue, changelog, slack_thread);
-                    if (feature.is_enabled('jira_links_change_updates')) {
-                        logger.info(JSON.stringify(changelog));
-                    }
 
                 }).catch((error) => {
                     logger.error(error.message);
                 });
+        } else {
+            // handleLinksChange(issue, changelog, slack_thread);
+            if (feature.is_enabled('jira_links_change_updates')) {
+                logger.info(JSON.stringify(req.body));
+            }
         }
     } else {
         logger.error(`Missing config for team ${team_id}`);

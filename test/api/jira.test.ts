@@ -92,7 +92,6 @@ describe('POST /api/jira/event/:team_id', () => {
         });
     });
 
-    /* eslint-disable sonarjs/cognitive-complexity */
     describe('webhookEvent: jira:issue_updated', () => {
         describe('status change', () => {
             const params = fixture('jira/webhook.issue_updated_status_change');
@@ -215,36 +214,38 @@ describe('POST /api/jira/event/:team_id', () => {
             });
 
         });
+    });
 
-        describe('link added', () => {
-            const params = fixture('jira/webhook.issue_updated_status_change');
+    describe('link added', () => {
+        const params = { webhookEvent: 'foo' };
 
-            it('returns 200 OK and logs the changelog', (done) => {
-                let api_call_body: string;
-                featureSpy.mockImplementationOnce((key) => {
-                    return key == 'jira_links_change_updates';
-                });
+        it('returns 200 OK and logs the changelog', (done) => {
+            let api_call_body: string;
+            featureSpy.mockImplementationOnce((key) => {
+                return key == 'jira_links_change_updates';
+            });
 
-                expect.assertions(2);
+            expect.assertions(4);
 
-                nock('https://slack.com')
-                    .post('/api/chat.postMessage', (body) => {
-                        api_call_body = JSON.stringify(body);
-                        return body;
-                    })
-                    .reply(200, { ok: true });
+            nock('https://slack.com')
+                .post('/api/chat.postMessage', (body) => {
+                    api_call_body = JSON.stringify(body);
+                    return body;
+                })
+                .reply(200, { ok: true });
 
-                service(params).expect(200).end((err) => {
-                    if (err) {
-                        return done(err);
-                    }
-                    expect(logInfoSpy).toHaveBeenCalled();
-                    expect(api_call_body).not.toBeNull();
+            service(params).expect(200).end((err) => {
+                if (err) {
+                    return done(err);
+                }
+                expect(logInfoSpy).toHaveBeenCalled();
+                const log_args = JSON.stringify(logInfoSpy.mock.calls[0]);
+                expect(log_args).toContain('foo');
+                expect(log_args).toContain('webhookEvent');
+                expect(api_call_body).not.toBeNull();
 
-                    done();
-                });
+                done();
             });
         });
     });
-    /* eslint-enable sonarjs/cognitive-complexity */
 });
