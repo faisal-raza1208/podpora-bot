@@ -5,6 +5,7 @@ import logger from '../../util/logger';
 import { store } from '../../util/secrets';
 import { Slack } from '../../lib/slack';
 import { Jira } from '../../lib/jira';
+import feature from '../../util/feature';
 
 interface IssueChangelog {
     id: string
@@ -102,6 +103,16 @@ function handleAttachmentChange(
     );
 }
 
+// function handleLinksChange(
+//     issue: Issue,
+//     changelog: IssueChangelog,
+//     slack_thread: SlackThread
+// ): void {
+//     if (feature.is_enabled('jira_links_change_updates')) {
+//         logger.info(JSON.stringify(changelog));
+//     }
+// }
+
 /**
  * POST /api/jira/:team_id
  *
@@ -127,6 +138,11 @@ export const postEvent = (req: Request, res: Response): void => {
                     const slack_thread = { team, channel, ts };
                     handleStatusChange(issue, changelog, slack_thread);
                     handleAttachmentChange(issue, changelog, slack_thread);
+                    // handleLinksChange(issue, changelog, slack_thread);
+                    if (feature.is_enabled('jira_links_change_updates')) {
+                        logger.info(JSON.stringify(changelog));
+                    }
+
                 }).catch((error) => {
                     logger.error(error.message);
                 });

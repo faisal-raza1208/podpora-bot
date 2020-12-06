@@ -5,7 +5,11 @@ import { build_service, build_response, fixture } from '../helpers';
 import { store } from '../../src/util/secrets';
 import app from '../../src/app';
 
+import feature from './../../src/util/feature';
+const featureSpy = jest.spyOn(feature, 'is_enabled');
+
 const logErrorSpy = jest.spyOn(logger, 'error').mockReturnValue({} as Logger);
+const logInfoSpy = jest.spyOn(logger, 'info').mockReturnValue({} as Logger);
 const storeGetSpy = jest.spyOn(store, 'get');
 
 beforeAll(() => {
@@ -88,6 +92,7 @@ describe('POST /api/jira/event/:team_id', () => {
         });
     });
 
+    /* eslint-disable sonarjs/cognitive-complexity */
     describe('webhookEvent: jira:issue_updated', () => {
         describe('status change', () => {
             const params = fixture('jira/webhook.issue_updated_status_change');
@@ -210,5 +215,36 @@ describe('POST /api/jira/event/:team_id', () => {
             });
 
         });
+
+        describe('link added', () => {
+            const params = fixture('jira/webhook.issue_updated_status_change');
+
+            it('returns 200 OK and logs the changelog', (done) => {
+                let api_call_body: string;
+                featureSpy.mockImplementationOnce((key) => {
+                    return key == 'jira_links_change_updates';
+                });
+
+                expect.assertions(2);
+
+                nock('https://slack.com')
+                    .post('/api/chat.postMessage', (body) => {
+                        api_call_body = JSON.stringify(body);
+                        return body;
+                    })
+                    .reply(200, { ok: true });
+
+                service(params).expect(200).end((err) => {
+                    if (err) {
+                        return done(err);
+                    }
+                    expect(logInfoSpy).toHaveBeenCalled();
+                    expect(api_call_body).not.toBeNull();
+
+                    done();
+                });
+            });
+        });
     });
+    /* eslint-enable sonarjs/cognitive-complexity */
 });
