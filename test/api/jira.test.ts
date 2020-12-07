@@ -266,7 +266,7 @@ describe('POST /api/jira/event/:team_id', () => {
                 .post('/api/chat.postMessage', (body) => {
                     const api_call_body = JSON.stringify(body);
                     expect(api_call_body).toContain('relates to');
-                    expect(api_call_body).toContain('is cloned by');
+                    expect(api_call_body).toContain('clones');
                     expect(api_call_body).toContain('is duplicated by');
 
                     done();

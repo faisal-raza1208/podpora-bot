@@ -83,15 +83,18 @@ function handleAttachmentChange(
 function issueLinksToMessage(jira: Jira, links: Array<DetailIssueLink>): string {
     const links_text = links.map((link) => {
         let issue;
+        let what;
         if (link.outwardIssue) {
+            what = link.type.outward;
             issue = link.outwardIssue;
         } else {
+            what = link.type.inward;
             issue = link.inwardIssue;
         }
 
         const url = jira.issueUrl(issue);
         const summary = issue.fields.summary;
-        return ` - ${link.type.inward} ${url} "${summary}"`;
+        return ` - ${what} ${url} "${summary}"`;
     });
 
     return links_text.join('\n');
