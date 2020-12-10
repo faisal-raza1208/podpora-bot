@@ -256,7 +256,7 @@ describe('POST /api/jira/event/:team_id', () => {
                 'self': 'https://example-bot.atlassian.net/rest/api/2/issue/10073',
                 'fields': {
                     'summary': 'Some linked issue summary',
-                    'status': {},
+                    'status': { 'name': 'Backlog' },
                     'issuetype': {
                         'self': 'https://example-bot.atlassian.net/rest/api/2/issuetype/10002',
                         'id': '10002',
@@ -281,7 +281,7 @@ describe('POST /api/jira/event/:team_id', () => {
                 'self': 'https://example-bot.atlassian.net/rest/api/2/issue/10073',
                 'fields': {
                     'summary': 'Some linked issue summary',
-                    'status': {},
+                    'status': { 'name': 'In Progress' },
                     'issuetype': {
                         'self': 'https://example-bot.atlassian.net/rest/api/2/issuetype/10002',
                         'id': '10002',
@@ -308,7 +308,7 @@ describe('POST /api/jira/event/:team_id', () => {
         }) as unknown as Issue['fields'];
 
         it('returns 200 OK and sends the links to slack thread', (done) => {
-            expect.assertions(5);
+            expect.assertions(7);
 
             featureSpy.mockImplementationOnce((key) => {
                 return key == 'jira_links_change_updates';
@@ -340,11 +340,13 @@ describe('POST /api/jira/event/:team_id', () => {
                 // 10072 inward, cloned, source
                 if (/inward_issue_thread_ts/.test(api_call_body)) {
                     expect(api_call_body).toContain('cloned');
+                    expect(api_call_body).toContain('Backlog');
                     slack_updates = slack_updates + 1;
                 } else {
                     // 10088 outward, clones, destination
                     expect(api_call_body).toContain('outward_issue_thread_ts');
                     expect(api_call_body).toContain('clones');
+                    expect(api_call_body).toContain('In Progress');
                     slack_updates = slack_updates + 1;
                 }
 

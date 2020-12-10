@@ -99,7 +99,9 @@ function issueLinkToMessage(jira: Jira, link: DetailIssueLinks): string {
 
     const url = jira.issueUrl(issue);
     const summary = issue.fields.summary;
-    return `${what} ${url} "${summary}"`;
+    const status = issue.fields.status.name;
+
+    return `${what} ${url} \n${summary} \nStatus: ${status}`;
 }
 
 function handleIssueLinkCreated(jira: Jira, issueLink: IssueLink): void {
