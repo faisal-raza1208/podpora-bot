@@ -1,11 +1,15 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
+import basicAuth from 'express-basic-auth';
 import {
     startCollection,
     requestCounters,
     responseCounters
 } from './util/metric';
+import {
+    METRICS_BASIC_AUTH_USERS
+} from './util/secrets';
 
 // Controllers (route handlers)
 import * as homeController from './controllers/home';
@@ -44,11 +48,17 @@ app.post('/api/slack/interaction', apiSlackController.postInteraction);
 app.post('/api/slack/event', apiSlackController.postEvent);
 app.post('/api/jira/event/:team_id', apiJiraController.postEvent);
 
+const auth_options: basicAuth.BasicAuthMiddlewareOptions = {
+    users: METRICS_BASIC_AUTH_USERS
+};
+
 
 /**
  * Prometheus metrics exposition
  */
-app.get('/metrics', metricsController.index);
+app.get('/metrics',
+        basicAuth(auth_options),
+        metricsController.index);
 startCollection();
 
 export default app;
