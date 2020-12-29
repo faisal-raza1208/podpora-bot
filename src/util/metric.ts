@@ -59,7 +59,7 @@ export const requestCounters = function(
 export const responseCounters = responseTime(
     function (req: Request, res: Response, time: number): void {
         if(req.path != '/metrics') {
-            responses.labels(req.method, req.url, String(res.statusCode)).observe(time);
+            responses.labels(req.method, req.path, String(res.statusCode)).observe(time);
         }
     });
 
