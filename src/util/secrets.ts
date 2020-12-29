@@ -112,5 +112,16 @@ if (!SESSION_SECRET) {
 }
 
 const REDIS_URL = process.env.REDIS_URL as string;
+const metrics_basic_auth = process.env['METRICS_BASIC_AUTH'] as string;
 
-export { store, REDIS_URL };
+if (!metrics_basic_auth) {
+    logger.error('No metrics auth credentials. Set METRICS_BASIC_AUTH environment variable.');
+    process.exit(1);
+}
+const METRICS_BASIC_AUTH_USERS = Object.fromEntries([metrics_basic_auth.split(':')]);
+
+export {
+    store,
+    REDIS_URL,
+    METRICS_BASIC_AUTH_USERS
+};
