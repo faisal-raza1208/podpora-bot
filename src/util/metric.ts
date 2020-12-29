@@ -26,7 +26,7 @@ export const numOfRequests = new Counter({
   /hello and /world would be two different paths.
 */
 
-export const totalPathsTakesn = new Counter({
+export const totalPathsTaken = new Counter({
     name: 'pathsTaken',
     help: 'paths taken in app',
     labelNames: ['path']
@@ -50,7 +50,7 @@ export const requestCounters = function(
 ): void {
     if(req.path != 'metrics'){
         numOfRequests.inc({ method: req.method });
-        totalPathsTakesn.inc({ path: req.path });
+        totalPathsTaken.inc({ path: req.path });
     }
     next();
 };
