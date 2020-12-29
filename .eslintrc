@@ -11,6 +11,9 @@
     "quotes": ["error", "single"],
     "no-console": "error",
     "max-len": ["error", { "code": 100 }],
+    "key-spacing": ["error", { "beforeColon": false, "afterColon": true }],
+    "comma-spacing": ["error", { "before": false, "after": true }],
+    "object-curly-spacing": ["error", "always"],
     "@typescript-eslint/explicit-function-return-type": "warn",
     "@typescript-eslint/no-explicit-any": 1,
     "@typescript-eslint/no-inferrable-types": [
