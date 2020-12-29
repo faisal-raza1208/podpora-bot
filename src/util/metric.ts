@@ -48,7 +48,7 @@ export const startCollection = function(): void {
 export const requestCounters = function(
     req: Request, res: Response, next: () => void
 ): void {
-    if(req.path != 'metrics'){
+    if(req.path != '/metrics'){
         numOfRequests.inc({ method: req.method });
         totalPathsTaken.inc({ path: req.path });
     }
@@ -58,7 +58,7 @@ export const requestCounters = function(
 /* this function updates response summary */
 export const responseCounters = responseTime(
     function (req: Request, res: Response, time: number): void {
-        if(req.url != '/metrics') {
+        if(req.path != '/metrics') {
             responses.labels(req.method, req.url, String(res.statusCode)).observe(time);
         }
     });
@@ -68,5 +68,5 @@ export const httpRequestDurationMicroseconds = new Histogram({
     name: 'http_requests_duration_ms',
     help: 'Duration of HTTP Requests in ms',
     labelNames: ['method', 'route', 'code'],
-    buckets: [0.10, 5, 15, 100, 200, 300, 400, 500, 600]
+    buckets: [10, 100, 200, 300, 400, 500, 1000]
 });
