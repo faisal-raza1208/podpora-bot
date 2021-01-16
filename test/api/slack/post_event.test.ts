@@ -3,7 +3,10 @@ import { Logger } from 'winston';
 import { merge, build_service, build_response, fixture } from '../../helpers';
 import logger from '../../../src/util/logger';
 import { store } from '../../../src/util/secrets';
-import { EventCallbackPayload } from '../../../src/lib/slack/api_interfaces';
+import {
+    EventCallbackPayload,
+    PostEventPayloads
+} from '../../../src/lib/slack/api_interfaces';
 import app from '../../../src/app';
 
 const logErrorSpy = jest.spyOn(logger, 'error').mockReturnValue({} as Logger);
@@ -19,14 +22,14 @@ afterEach(() => {
 
 describe('POST /api/slack/event', () => {
     const api_path = '/api/slack/event';
-    const service = build_service(app, api_path);
+    const service = build_service<PostEventPayloads>(app, api_path);
 
     describe('type: url_verification', () => {
         const params = {
             type: 'url_verification',
             token: 'dummy token',
             challenge: 'dummy challenge'
-        };
+        } as PostEventPayloads;
         const response = build_response(service(params));
 
         it('responds back with the challenge param', (done) => {
@@ -38,16 +41,23 @@ describe('POST /api/slack/event', () => {
     });
 
     describe('type: event_callback', () => {
-        describe('subtype: not a file_share event', () => {
-            const params = {
-                type: 'event_callback',
-                subtype: 'not a file share',
-                team_id: 'T001',
-                event: { thread_ts: 'foo-thread-ts' }
-            };
+        const dummy_event = {
+            ts: 'not important',
+            type: 'dummy',
+            channel: 'dummy',
+            thread_ts: 'foo-thread-ts'
+        };
+        const default_params = {
+            type: 'event_callback',
+            token: 'dummy token',
+            subtype: 'not a file share',
+            team_id: 'T001',
+            event: dummy_event
+        } as EventCallbackPayload;
 
+        describe('subtype: not a file_share event', () => {
             it('will be ignored', () => {
-                return service(params).expect(200);
+                return service(default_params).expect(200);
             });
         });
 
@@ -108,10 +118,11 @@ describe('POST /api/slack/event', () => {
             });
 
             describe('message not in a thread', () => {
-                const not_in_thread_params = merge(params, {
-                    'event': merge(params['event'], {
-                        thread_ts: undefined
-                    })
+                const not_in_thread_params = merge<EventCallbackPayload>(params, {
+                    'event': merge<EventCallbackPayload['event']>(
+                        params['event'], {
+                            thread_ts: undefined
+                        })
                 });
 
                 it('will be ignored', () => {
@@ -122,53 +133,64 @@ describe('POST /api/slack/event', () => {
 
         describe('subtype: file_share', () => {
             const default_params =
-                fixture('slack/events.message_with_file') as unknown as EventCallbackPayload;
+                fixture('slack/events.message_with_file') as EventCallbackPayload;
 
             describe('message on support channel', () => {
-                const params = merge(default_params, {
-                    'event': merge(default_params['event'], { channel: 'suppchannel' } )
-                }) as EventCallbackPayload;
+                const params = merge<EventCallbackPayload>(
+                    default_params, {
+                        'event': merge<EventCallbackPayload['event']>(
+                            default_params['event'], { channel: 'suppchannel' }
+                        )
+                    });
 
                 test_file_share_on_supported_channel(params);
             });
 
             describe('message on product channel', () => {
-                const params = merge(default_params, {
-                    'event': merge(default_params['event'], { channel: 'prodchannel' } )
-                }) as EventCallbackPayload;
+                const params = merge<EventCallbackPayload>(
+                    default_params, {
+                        'event': merge<EventCallbackPayload['event']>(
+                            default_params['event'], { channel: 'prodchannel' }
+                        )
+                    });
 
                 test_file_share_on_supported_channel(params);
             });
 
             describe('message not on support or product channel', () => {
-                const params = merge(default_params, {
-                    'event': merge(default_params['event'], { channel: 'unknownchannel' } )
-                });
+                const params = merge<EventCallbackPayload>(
+                    default_params, {
+                        'event': merge<EventCallbackPayload['event']>(
+                            default_params['event'], { channel: 'unknownchannel' }
+                        )
+                    });
 
                 it('will be ignored', () => {
                     return service(params).expect(200);
                 });
             });
         });
-    });
 
-    describe('when something goes wrong', () => {
-        const params = {
-            'team_id': 'BAD-TEAM-ID',
-            'event': {}
-        };
+        describe('when something goes wrong', () => {
+            const params = merge<EventCallbackPayload>(
+                default_params,
+                {
+                    'team_id': 'BAD-TEAM-ID'
+                });
 
-        it('logs the error', (done) => {
-            service(params).expect(200).end((err) => {
-                if (err) {
-                    return done(err);
-                }
+            it('logs the error', (done) => {
+                service(params).expect(200).end((err) => {
+                    if (err) {
+                        return done(err);
+                    }
 
-                expect(logErrorSpy).toHaveBeenCalled();
-                expect(logErrorSpy.mock.calls[0].toString())
-                    .toContain('postEvent');
-                done();
+                    expect(logErrorSpy).toHaveBeenCalled();
+                    expect(logErrorSpy.mock.calls[0].toString())
+                        .toContain('postEvent');
+                    done();
+                });
             });
         });
+
     });
 });

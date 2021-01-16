@@ -3,6 +3,7 @@ import { Logger } from 'winston';
 import { merge, build_service, build_response } from '../../helpers';
 import logger from '../../../src/util/logger';
 import app from '../../../src/app';
+import { PostCommandPayload } from '../../../src/lib/slack/api_interfaces';
 
 const logErrorSpy = jest.spyOn(logger, 'error').mockReturnValue({} as Logger);
 
@@ -29,11 +30,11 @@ describe('POST /api/slack/command', () => {
         text: '',
         response_url: 'https://hooks.slack.com/commands/1234/5678',
         trigger_id: '13345224609.738474920.8088930838d88f008e0'
-    };
+    } as PostCommandPayload;
     const api_path = '/api/slack/command';
-    const service = build_service(app, api_path);
+    const service = build_service<PostCommandPayload>(app, api_path);
 
-    function test_command_with_modal(params: Record<string, unknown>): void {
+    function test_command_with_modal(params: PostCommandPayload): void {
         it('sends modal view to Slack', (done) => {
             nock('https://slack.com')
                 .post('/api/views.open')
@@ -60,7 +61,7 @@ describe('POST /api/slack/command', () => {
         describe('when something goes wrong (wrong team id)', () => {
             it('logs the error', (done) => {
                 expect.assertions(2);
-                const bad_params = merge(params, { team_id: 'wrong team id' });
+                const bad_params = merge<PostCommandPayload>(params, { team_id: 'wrong team id' });
 
                 service(bad_params).expect(200).end((err) => {
                     if (err) {
@@ -74,8 +75,10 @@ describe('POST /api/slack/command', () => {
             });
 
             it('notify user about issue', (done) => {
-                const bad_params = merge(params, { team_id: 'wrong team id' });
-                const response = build_response(service(bad_params));
+                const bad_params = merge<PostCommandPayload>(params, { team_id: 'wrong team id' });
+                const response = build_response(
+                    service(bad_params)
+                );
 
                 response((body: Record<string, unknown>) => {
                     const body_str = JSON.stringify(body);
@@ -87,7 +90,7 @@ describe('POST /api/slack/command', () => {
     }
 
     function test_command_help(
-        params: Record<string, unknown>,
+        params: PostCommandPayload,
         commandHelpResponse: { text: string }
     ): void {
         const response = build_response(service(params));
@@ -105,22 +108,22 @@ describe('POST /api/slack/command', () => {
     });
 
     describe('command: /support', () => {
-        const support_params = merge(default_params, { command: '/support' });
+        const support_params = merge<PostCommandPayload>(default_params, { command: '/support' });
 
         describe('text: bug', () => {
-            const bug_params = merge(support_params, { text: 'bug' });
+            const bug_params = merge<PostCommandPayload>(support_params, { text: 'bug' });
 
             test_command_with_modal(bug_params);
         });
 
         describe('text: data', () => {
-            const data_params = merge(support_params, { text: 'data' });
+            const data_params = merge<PostCommandPayload>(support_params, { text: 'data' });
 
             test_command_with_modal(data_params);
         });
 
         describe('text: ping', () => {
-            const params = merge(support_params, { text: 'ping' });
+            const params = merge<PostCommandPayload>(support_params, { text: 'ping' });
             const response = build_response(service(params));
 
             it('respond with ephemeral message Pong!', (done) => {
@@ -146,10 +149,10 @@ describe('POST /api/slack/command', () => {
     });
 
     describe('command: /idea', () => {
-        const product_params = merge(default_params, { command: '/idea' });
+        const product_params = merge<PostCommandPayload>(default_params, { command: '/idea' });
 
         describe('text: help', () => {
-            const idea_params = merge(product_params, { text: 'help' });
+            const idea_params = merge<PostCommandPayload>(product_params, { text: 'help' });
             const commandHelpResponse = {
                 text: '👋 Need help with product bot?\n\n'
                     + '> Submit new product idea:\n>`/idea`'
@@ -158,14 +161,14 @@ describe('POST /api/slack/command', () => {
         });
 
         describe('text: nothing', () => {
-            const idea_params = merge(product_params, { text: ' ' });
+            const idea_params = merge<PostCommandPayload>(product_params, { text: ' ' });
 
             test_command_with_modal(idea_params);
         });
     });
 
     describe('command: /unknown', () => {
-        const params = merge(default_params, { command: '/unknown' });
+        const params = merge<PostCommandPayload>(default_params, { command: '/unknown' });
         const response = build_response(service(params));
 
         it('notify user that the command is not implemented yet', (done) => {

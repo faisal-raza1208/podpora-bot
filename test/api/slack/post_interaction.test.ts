@@ -6,7 +6,8 @@ import feature from '../../../src/util/feature';
 import { store } from '../../../src/util/secrets';
 import {
     ViewSubmission,
-    ViewSubmissionSelectValue
+    ViewSubmissionSelectValue,
+    PostInteractionPayload
 } from '../../../src/lib/slack/api_interfaces';
 
 import app from '../../../src/app';
@@ -32,7 +33,7 @@ afterEach(() => {
 */
 describe('POST /api/slack/interaction', () => {
     const api_path = '/api/slack/interaction';
-    const service = build_service(app, api_path);
+    const service = build_service<Record<string, unknown>>(app, api_path);
 
     function test_submission(params: Record<string, unknown>): void {
         it('returns 200 OK', (done) => {
@@ -377,19 +378,25 @@ describe('POST /api/slack/interaction', () => {
         });
 
         describe('callback_id: support_bug', () => {
-            const bug_payload = merge(payload, { callback_id: 'support_bug' });
+            const bug_payload = merge<PostInteractionPayload>(
+                payload, { callback_id: 'support_bug' }
+            );
 
             test_shortcut_with_modal({ payload: JSON.stringify(bug_payload) });
         });
 
         describe('callback_id: support_data', () => {
-            const data_payload = merge(payload, { callback_id: 'support_data' });
+            const data_payload = merge<PostInteractionPayload>(
+                payload, { callback_id: 'support_data' }
+            );
 
             test_shortcut_with_modal({ payload: JSON.stringify(data_payload) });
         });
 
         describe('callback_id: support_unknown-command', () => {
-            const shortcut_payload = merge(payload, { callback_id: 'support_unknown-command' });
+            const shortcut_payload = merge<PostInteractionPayload>(
+                payload, { callback_id: 'support_unknown-command' }
+            );
 
             it('returns 200 OK and log the callback id for debugging', (done) => {
                 const logDebugSpy = jest.spyOn(logger, 'debug').mockReturnValue({} as Logger);

@@ -20,7 +20,7 @@ afterEach(() => {
 
 describe('POST /api/jira/event/:team_id', () => {
     const api_path = '/api/jira/event/T0001';
-    const service = build_service(app, api_path);
+    const service = build_service<Record<string, unknown>>(app, api_path);
     const params = {};
     const response = build_response(service(params));
     type CallbackHandler = (err: Error) => void;
@@ -53,7 +53,7 @@ describe('POST /api/jira/event/:team_id', () => {
 
     describe('jira config not found', () => {
         const api_path = '/api/jira/event/BAD-TEAM-ID';
-        const service = build_service(app, api_path);
+        const service = build_service<Record<string, unknown>>(app, api_path);
 
         it('returns 404 Not found', (done) => {
             expect.assertions(1);
@@ -245,7 +245,7 @@ describe('POST /api/jira/event/:team_id', () => {
                 'destinationIssueId': 10088,
             }
         };
-        const issue = fixture('jira/issue.getIssue');
+        const issue = fixture('jira/issue.getIssue') as unknown as Issue;
         const inward_issue_link = {
             'id': '10002',
             'self': 'https://example-bot.atlassian.net/rest/api/2/issueLink/10002',
@@ -296,22 +296,22 @@ describe('POST /api/jira/event/:team_id', () => {
                 }
             }
         };
-        const issue_outward = merge(issue, {
+        const issue_outward = merge<Issue>(issue, {
             id: '10088',
             key: 'SUP-82'
-        }) as unknown as Issue;
-        const issue_inward = merge(issue, {
+        });
+        const issue_inward = merge<Issue>(issue, {
             id: '10072',
             key: 'SUP-72'
-        }) as unknown as Issue;
+        });
 
-        issue_outward.fields = merge(issue_outward.fields, {
+        issue_outward.fields = merge<Issue['fields']>(issue_outward.fields, {
             issuelinks: [outward_issue_link]
-        }) as unknown as Issue['fields'];
+        });
 
-        issue_inward.fields = merge(issue_inward.fields, {
+        issue_inward.fields = merge<Issue['fields']>(issue_inward.fields, {
             issuelinks: [inward_issue_link]
-        }) as unknown as Issue['fields'];
+        });
 
         it('returns 200 OK and sends the links to slack thread', (done) => {
             expect.assertions(7);
@@ -432,7 +432,7 @@ describe('POST /api/jira/event/:team_id', () => {
             it('returns 200 OK', (done) => {
                 // expect.assertions(1);
                 let store_calls = 0;
-                const issue = fixture('jira/issue.getIssue') as unknown as Issue;
+
                 issue.fields.issuelinks = [];
 
                 storeGetSpy.mockImplementation(() => {

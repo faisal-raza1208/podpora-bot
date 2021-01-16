@@ -18,18 +18,18 @@ interface ServiceResponseCallback {
     (body: Record<string, unknown>): void;
 }
 
-export function merge(
-    target: Record<string, unknown>,
+export function merge<T>(
+    target: T,
     source: Record<string, unknown>
-): Record<string, unknown> {
+): T {
     const target_copy = Object.assign({}, target);
 
     return Object.assign(target_copy, source);
 }
 
-export function build_service(app: express.Application, api_path: string) {
-    return function(params: Record<string, unknown>): supertest.Test {
-        return request(app).post(api_path).send(params);
+export function build_service<T>(app: express.Application, api_path: string) {
+    return function(params: T): supertest.Test {
+        return request(app).post(api_path).send(params as unknown as Record<string, unknown>);
     };
 }
 
