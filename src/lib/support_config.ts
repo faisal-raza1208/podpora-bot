@@ -195,9 +195,9 @@ configs.syft = {
     ): IssueParams {
         const title_and_desc = normalisedTitleAndDesc(submission);
         const title = title_and_desc.title;
-        let board = 'SUP';
-        let desc = title_and_desc.desc;
-        let fields: IssueParams['fields'] = {
+        const board = 'SUP';
+        const desc = title_and_desc.desc;
+        const fields: IssueParams['fields'] = {
             project: { key: board },
             summary: title,
             issuetype: { name: '' },
