@@ -12,10 +12,10 @@
     {
       "type": "input",
       "block_id": "sl_title_block",
+      "optional": false,
       "element": {
         "type": "plain_text_input",
         "action_id": "sl_title",
-        "optional": false,
         "placeholder": {
           "type": "plain_text",
           "text": "e.g. Report on number of shifts per employer in Feb 2019"
@@ -29,10 +29,10 @@
     {
       "type": "input",
       "block_id": "ml_description_block",
+      "optional": false,
       "element": {
         "type": "plain_text_input",
         "action_id": "ml_description",
-        "optional": false,
         "multiline": true,
         "placeholder": {
           "type": "plain_text",
@@ -51,11 +51,11 @@
     {
       "type": "input",
       "block_id": "ml_reason_block",
+      "optional": false,
       "element": {
         "type": "plain_text_input",
         "action_id": "ml_reason",
         "multiline": true,
-        "optional": false,
         "placeholder": {
           "type": "plain_text",
           "text": "Please enter the reason why this data or update is required along with its urgency."
