@@ -59,8 +59,16 @@ let client: RedisClient;
 
 function redis_client(): RedisClient {
     if (typeof client === 'undefined') {
-        // TODO: move to secrets.ts ?
-        client = redis.createClient(REDIS_URL);
+        if (!!store.featureFlag('redis_auth_without_user')) {
+            const url = new URL(REDIS_URL);
+            client = redis.createClient({
+                host: url.hostname,
+                port: Number(url.port),
+                password: url.password
+            });
+        } else {
+            client = redis.createClient(REDIS_URL);
+        }
 
         client.on('error', function(error: Error) {
             logger.error(error);
@@ -122,6 +130,5 @@ const METRICS_BASIC_AUTH_USERS = Object.fromEntries([metrics_basic_auth.split(':
 
 export {
     store,
-    REDIS_URL,
     METRICS_BASIC_AUTH_USERS
 };
