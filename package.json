@@ -62,7 +62,7 @@
     "@typescript-eslint/parser": "^4.28.0",
     "chai": "^4.3.3",
     "concurrently": "^6.2.0",
-    "eslint": "^7.28.0",
+    "eslint": "^7.29.0",
     "eslint-plugin-sonarjs": "^0.8.0-125",
     "jest": "^27.0.4",
     "nock": "^13.1.0",
