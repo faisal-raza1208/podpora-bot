@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Express, RequestHandler } from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
 import basicAuth from 'express-basic-auth';
@@ -19,13 +19,13 @@ import * as apiJiraController from './controllers/api/jira';
 import * as metricsController from './controllers/metrics';
 
 // Create Express server
-const app = express();
+const app: Express = express();
 
 // Express configuration
 /* istanbul ignore next */
 app.set('port', process.env.PORT || 3000);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json() as RequestHandler);
+app.use(bodyParser.urlencoded({ extended: true }) as RequestHandler);
 
 app.use(
     express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 })
