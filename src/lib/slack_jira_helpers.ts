@@ -8,8 +8,7 @@ import {
     ViewSubmissionSelectValue
 } from './slack/api_interfaces';
 import {
-    IssueChangelog,
-    Issue,
+    IssueChangelog
 } from './jira/api_interfaces';
 
 function fileShareEventToIssueComment(
@@ -76,7 +75,6 @@ function viewSelectedVal(
 }
 
 function statusChangeMessage(
-    issue: Issue,
     changelog: IssueChangelog
 ): string | null {
     const status_change = changelog.items.find((el) => el.field === 'status');

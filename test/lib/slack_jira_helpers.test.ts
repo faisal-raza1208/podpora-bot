@@ -7,16 +7,6 @@ afterEach(() => {
 });
 
 describe('statusChangeMessage(issue, changelog)', () => {
-    const issue = {
-        id: '10057',
-        self: 'https://example.atlassian.net/rest/api/2/10057',
-        key: 'SUP-58',
-        fields: {
-            summary: 'not important',
-            attachment: [],
-            issuelinks: []
-        }
-    };
     describe('move from Done to active state', () => {
         const changelog = {
             id: '10143',
@@ -43,7 +33,7 @@ describe('statusChangeMessage(issue, changelog)', () => {
         };
 
         it('does not include the resolution in Slack message', () => {
-            const msg = statusChangeMessage(issue, changelog);
+            const msg = statusChangeMessage(changelog);
 
             expect(msg).toContain('Status changed from');
             expect(msg).toContain('Done');

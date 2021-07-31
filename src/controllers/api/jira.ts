@@ -32,7 +32,7 @@ function handleStatusChange(
 ): void {
     const slack_options = store.slackOptions(slack_thread.team);
     const slack = new Slack(slack_options);
-    const message = statusChangeMessage(issue, changelog);
+    const message = statusChangeMessage(changelog);
 
     if (message === null) {
         return;
