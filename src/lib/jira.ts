@@ -91,6 +91,5 @@ class Jira {
 }
 
 export {
-    IssueParams,
     Jira
 };
