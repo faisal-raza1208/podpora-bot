@@ -11,18 +11,13 @@ import {
 } from './jira/api_interfaces';
 import {
     normalisedTitleAndDesc,
-    viewInputVal
+    viewInputVal,
+    SlackCommand
 } from './slack_jira_helpers';
 // import feature from '../util/feature';
 
 interface Views {
     [index: string]: View
-}
-
-interface SlackCommand {
-    name: string,
-    desc: string,
-    example: string
 }
 
 interface SupportConfig {
