@@ -1,3 +1,13 @@
+import {
+    IssueBean,
+    CreatedIssue,
+    Fields,
+    RemoteIssueLinkIdentifies
+} from 'jira.js/out/version2/models';
+import {
+    CreateIssue
+} from 'jira.js/out/version2/parameters';
+
 interface IssueChangelog {
     id: string
     items: Array<{
@@ -19,15 +29,12 @@ interface Attachment {
     content: string
 }
 
-interface Issue {
-    id: number | string,
-    key: string,
-    self: string,
-    fields: {
-        summary: string,
-        attachment: Array<Attachment>,
-        issuelinks: Array<DetailIssueLinks>
-    }
+interface RealIssueFields extends Fields {
+    issuelinks: Array<DetailIssueLinks>
+}
+
+interface Issue extends IssueBean {
+    fields: RealIssueFields
 }
 
 interface IssueLink {
@@ -123,6 +130,8 @@ interface IssueParams {
 export {
     IssueChangelog,
     Attachment,
+    CreateIssue,
+    CreatedIssue,
     Issue,
     IssueLink,
     IssueParams,
@@ -130,5 +139,6 @@ export {
     // isInwardIssueDetailLink,
     isOutwardIssueDetailLink,
     DetailInwardIssueLink,
-    DetailOutwardIssueLink
+    DetailOutwardIssueLink,
+    RemoteIssueLinkIdentifies
 };

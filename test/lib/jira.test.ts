@@ -6,7 +6,7 @@ import {
     Jira,
 } from '../../src/lib/jira';
 import {
-    Issue,
+    CreatedIssue
 } from '../../src/lib/jira/api_interfaces';
 
 const logErrorSpy = jest.spyOn(logger, 'error').mockReturnValue({} as Logger);
@@ -23,7 +23,7 @@ describe('Jira', () => {
         host: 'http://example.com'
     };
     const jira = new Jira(mock_config);
-    const issue = createIssueResponse as unknown as Issue;
+    const issue = createIssueResponse as unknown as CreatedIssue;
 
     describe('#createIssue(params)', () => {
         const params = {

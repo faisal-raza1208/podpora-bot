@@ -10,7 +10,7 @@
     "semi": ["error", "always"],
     "quotes": ["error", "single"],
     "no-console": "error",
-    "max-len": ["error", { "code": 100 }],
+    "max-len": ["error", { "code": 100, "ignoreUrls": true }],
     "key-spacing": ["error", { "beforeColon": false, "afterColon": true }],
     "comma-spacing": ["error", { "before": false, "after": true }],
     "object-curly-spacing": ["error", "always"],

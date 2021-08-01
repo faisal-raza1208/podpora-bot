@@ -327,11 +327,11 @@ describe('POST /api/jira/event/:team_id', () => {
             });
 
             nock('https://example.com')
-                .get('/rest/agile/1.0/issue/10072')
+                .get('/rest/api/2/issue/10072')
                 .reply(200, issue_inward);
 
             nock('https://example.com')
-                .get('/rest/agile/1.0/issue/10088')
+                .get('/rest/api/2/issue/10088')
                 .reply(200, issue_outward);
 
             let slack_updates = 0;
@@ -385,11 +385,11 @@ describe('POST /api/jira/event/:team_id', () => {
                 });
 
                 nock('https://example.com')
-                    .get('/rest/agile/1.0/issue/10072')
+                    .get('/rest/api/2/issue/10072')
                     .reply(200, issue);
 
                 nock('https://example.com')
-                    .get('/rest/agile/1.0/issue/10088')
+                    .get('/rest/api/2/issue/10088')
                     .reply(200, issue);
 
                 serviceCall(params, done);
@@ -402,11 +402,11 @@ describe('POST /api/jira/event/:team_id', () => {
                 let store_calls = 0;
 
                 nock('https://example.com')
-                    .get('/rest/agile/1.0/issue/10072')
+                    .get('/rest/api/2/issue/10072')
                     .reply(200, issue);
 
                 nock('https://example.com')
-                    .get('/rest/agile/1.0/issue/10088')
+                    .get('/rest/api/2/issue/10088')
                     .reply(200, issue);
 
                 storeGetSpy.mockImplementation(() => {
@@ -445,15 +445,16 @@ describe('POST /api/jira/event/:team_id', () => {
                 });
 
                 nock('https://example.com')
-                    .get('/rest/agile/1.0/issue/10072')
+                    .get('/rest/api/2/issue/10072')
                     .reply(200, issue);
 
                 nock('https://example.com')
-                    .get('/rest/agile/1.0/issue/10088')
+                    .get('/rest/api/2/issue/10088')
                     .reply(200, issue);
 
                 serviceCall(params, done);
             });
         });
+
     });
 });
