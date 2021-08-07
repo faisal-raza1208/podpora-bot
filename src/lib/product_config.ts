@@ -13,7 +13,7 @@ import {
     viewSelectedVal
 } from './slack_jira_helpers';
 import {
-    IssueParams
+    CreateIssue
 } from './jira/api_interfaces';
 
 interface Views {
@@ -37,7 +37,7 @@ interface ProductConfig {
         submission: Submission,
         user: SlackUser,
         request_type: string
-    ) => IssueParams,
+    ) => CreateIssue,
     messageText: (
         submission: Submission,
         user: SlackUser,
@@ -98,7 +98,7 @@ configs.default = {
         user: SlackUser,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         request_type: string,
-    ): IssueParams {
+    ): CreateIssue {
         const title_and_desc = normalisedTitleAndDesc(submission);
         const title = title_and_desc.title;
         let desc = title_and_desc.desc;

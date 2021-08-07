@@ -7,7 +7,7 @@ import {
     ViewSubmission
 } from './slack/api_interfaces';
 import {
-    IssueParams
+    CreateIssue
 } from './jira/api_interfaces';
 import {
     normalisedTitleAndDesc,
@@ -32,7 +32,7 @@ interface SupportConfig {
         submission: Submission,
         user: SlackUser,
         request_type: string
-    ) => IssueParams,
+    ) => CreateIssue,
     messageText: (
         submission: Submission,
         user: SlackUser,
@@ -104,7 +104,7 @@ configs.default = {
         submission: Submission,
         user: SlackUser,
         request_type: string,
-    ): IssueParams {
+    ): CreateIssue {
         const board = 'SUP';
         const title_and_desc = normalisedTitleAndDesc(submission);
         const title = title_and_desc.title;
@@ -183,19 +183,19 @@ configs.syft = {
         submission: Submission,
         user: SlackUser,
         request_type: string,
-    ): IssueParams {
+    ): CreateIssue {
         const title_and_desc = normalisedTitleAndDesc(submission);
         const title = title_and_desc.title;
         const board = 'SUP';
         let desc = title_and_desc.desc;
-        const fields: IssueParams['fields'] = {
+        const fields: CreateIssue['fields'] = {
             project: { key: board },
             summary: title,
             issuetype: { name: '' },
             description: '',
             labels: ['support']
         };
-        const result: IssueParams = { fields: fields };
+        const result: CreateIssue = { fields: fields };
 
         if (request_type === 'bug') {
             fields.issuetype.name = 'Bug';
