@@ -3,7 +3,8 @@ import {
     CreatedIssue,
     Fields,
     RemoteIssueLinkIdentifies,
-    LinkedIssue
+    LinkedIssue,
+    IssueTransition
 } from 'jira.js/out/version2/models';
 import {
     CreateIssue
@@ -94,13 +95,6 @@ function isOutwardIssueDetailLink(
 
 type DetailIssueLinks = DetailOutwardIssueLink | DetailInwardIssueLink;
 
-interface Transition {
-    [index: string]: string | boolean;
-
-    id: string,
-    looped: boolean
-}
-
 interface IssueParams {
     // [index: string]: Record<string, unknown>;
 
@@ -113,7 +107,7 @@ interface IssueParams {
         components?: Array<{ name: string }>,
     }
 
-    transition?: Transition
+    transition?: IssueTransition
 }
 
 export {
