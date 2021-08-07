@@ -2,7 +2,8 @@ import {
     IssueBean,
     CreatedIssue,
     Fields,
-    RemoteIssueLinkIdentifies
+    RemoteIssueLinkIdentifies,
+    LinkedIssue
 } from 'jira.js/out/version2/models';
 import {
     CreateIssue
@@ -64,23 +65,11 @@ interface DetailIssueLink {
     }
 }
 
-interface LinkIssue {
+interface LinkIssue extends LinkedIssue {
     id: string,
     key: string,
     self: string,
-    fields: {
-        summary: string
-        status: { id: string, name: string }
-        issuetype: {
-            self: string
-            id: string
-            description: string
-            iconUrl: string
-            name: string
-            subtask: boolean
-            avatarId: number
-        }
-    }
+    fields: Fields
 }
 
 interface DetailOutwardIssueLink extends DetailIssueLink {
