@@ -30,7 +30,7 @@
     "@sindresorhus/slugify": "^1.1.2",
     "@slack/events-api": "^3.0.1",
     "@slack/interactive-messages": "^2.0.2",
-    "@slack/web-api": "^6.3.0",
+    "@slack/web-api": "^6.4.0",
     "@types/response-time": "^2.3.5",
     "async": "^3.2.1",
     "body-parser": "^1.19.0",
@@ -38,14 +38,14 @@
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.0",
-    "jira.js": "^2.5.0",
+    "jira.js": "^2.5.2",
     "prom-client": "^13.2.0",
     "redis": "^3.1.2",
     "response-time": "^2.3.2",
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@slack/types": "^2.1.0",
+    "@slack/types": "^2.2.0",
     "@types/async": "^3.2.7",
     "@types/chai": "^4.2.21",
     "@types/concurrently": "^6.2.1",
@@ -59,8 +59,8 @@
     "@types/request-promise": "^4.1.48",
     "@types/shelljs": "^0.8.9",
     "@types/supertest": "^2.0.11",
-    "@typescript-eslint/eslint-plugin": "^4.29.1",
-    "@typescript-eslint/parser": "^4.29.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
     "chai": "^4.3.3",
     "concurrently": "^6.2.1",
     "eslint": "^7.32.0",
@@ -70,9 +70,9 @@
     "node-notifier": "^10.0.0",
     "nodemon": "^2.0.12",
     "shelljs": "^0.8.4",
-    "supertest": "^6.1.5",
+    "supertest": "^6.1.6",
     "ts-jest": "^27.0.5",
-    "ts-node": "^10.2.0",
+    "ts-node": "^10.2.1",
     "typescript": "^4.3.5"
   }
 }
