@@ -14,7 +14,7 @@ import {
     viewInputVal,
     SlackCommand
 } from './slack_jira_helpers';
-// import feature from '../util/feature';
+import feature from '../util/feature';
 
 interface Views {
     [index: string]: View
@@ -215,10 +215,13 @@ Submitted by: ${user.name}`;
             fields.issuetype.name = 'Data Request';
             fields.description = `${desc}\n\nSubmitted by: ${user.name}`;
             fields.components = [{ name: 'Back-end' }];
-            result.transition = {
-                'id': '131',
-                'looped': true
-            };
+
+            if (feature.is_enabled('data_request_transition')) {
+                result.transition = {
+                    'id': '131',
+                    'looped': true
+                };
+            }
         }
 
         return result;
