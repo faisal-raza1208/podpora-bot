@@ -69,7 +69,7 @@ Submitted by: ${slack_user.name}`;
                         config.issueParams(submission, slack_user, request_type)
                     ).toEqual({
                         fields: {
-                            project: { key: 'INTOPS' },
+                            project: { key: 'SUP' },
                             summary: 'A',
                             issuetype: { name: 'Data Request' },
                             description: desc,
@@ -87,13 +87,30 @@ Submitted by: ${slack_user.name}`;
                 describe('feature: data_request_transition', () => {
                     it('includes transition attribute in issue params', () => {
                         const featureSpy = jest.spyOn(feature, 'is_enabled');
-                        featureSpy.mockImplementationOnce(() => { return true; });
+                        featureSpy.mockImplementation((key) => {
+                            return key === 'data_request_transition';
+                        });
 
                         const result = config.issueParams(submission, slack_user, request_type);
                         expect(result.transition).toEqual({
                             id: '131',
                             looped: true
                         });
+
+                        featureSpy.mockRestore();
+                    });
+                });
+
+                describe('feature: intops_data_requests', () => {
+                    it('sets Jira project to `INTOPS`', () => {
+                        const featureSpy = jest.spyOn(feature, 'is_enabled');
+                        featureSpy.mockImplementation((key) => {
+                            return key === 'intops_data_requests';
+                        });
+
+                        const result = config.issueParams(submission, slack_user, request_type);
+                        expect(result.fields.project.key).toEqual('INTOPS');
+                        featureSpy.mockRestore();
                     });
                 });
             });
@@ -121,7 +138,7 @@ Submitted by: ${slack_user.name}`;
                         config.issueParams(submission, slack_user, request_type)
                     ).toEqual({
                         fields: {
-                            project: { key: 'INTOPS' },
+                            project: { key: 'SUP' },
                             summary: first_part_of_title,
                             issuetype: { name: 'Data Request' },
                             description: desc,

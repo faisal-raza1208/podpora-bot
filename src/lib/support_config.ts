@@ -211,7 +211,9 @@ Submitted by: ${user.name}`;
 
         } else {
             desc = `${desc}\n\nReason and urgency:\n${submission.reason}`;
-            fields.project.key = 'INTOPS';
+            if (feature.is_enabled('intops_data_requests')) {
+                fields.project.key = 'INTOPS';
+            }
             fields.issuetype.name = 'Data Request';
             fields.description = `${desc}\n\nSubmitted by: ${user.name}`;
             fields.components = [{ name: 'Back-end' }];
