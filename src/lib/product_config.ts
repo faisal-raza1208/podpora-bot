@@ -5,7 +5,8 @@ import { View } from '@slack/web-api';
 import {
     SlackUser,
     Submission,
-    ViewSubmission
+    ViewSubmission,
+    RequestType
 } from './slack/api_interfaces';
 import {
     normalisedTitleAndDesc,
@@ -36,12 +37,12 @@ interface ProductConfig {
     issueParams: (
         submission: Submission,
         user: SlackUser,
-        request_type: string
+        request_type: RequestType
     ) => CreateIssue,
     messageText: (
         submission: Submission,
         user: SlackUser,
-        request_type: string
+        request_type: RequestType
     ) => string
 }
 
@@ -97,7 +98,7 @@ configs.default = {
         submission: Submission,
         user: SlackUser,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        request_type: string,
+        request_type: RequestType,
     ): CreateIssue {
         const title_and_desc = normalisedTitleAndDesc(submission);
         const title = title_and_desc.title;
@@ -136,7 +137,7 @@ Submitted by: ${user.name}`;
         submission: Submission,
         user: SlackUser,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        request_type: string
+        request_type: RequestType
     ): string {
         return `<@${user.id}> has submitted a new product idea:\n\n` +
             `*${submission.title}*\n\n${submission.description}\n\n` +

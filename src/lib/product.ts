@@ -15,7 +15,8 @@ import {
     ChannelThreadFileShareEvent,
     SlackUser,
     Submission,
-    ViewSubmission
+    ViewSubmission,
+    RequestType
 } from './slack/api_interfaces';
 import {
     fileShareEventToIssueComment,
@@ -69,7 +70,7 @@ const product = {
         jira: Jira,
         submission: Submission,
         user: SlackUser,
-        request_type: string
+        request_type: RequestType
     ): void {
         const config = productConfig(product.configName(slack));
         const message_text = config.messageText(
@@ -171,7 +172,7 @@ const product = {
         slack: Slack,
         jira: Jira,
         payload: ViewSubmission,
-        request_type: string,
+        request_type: RequestType,
         res: Response
     ): Response {
         const { user, view } = payload;

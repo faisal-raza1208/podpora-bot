@@ -16,7 +16,8 @@ import {
     Shortcut,
     ChannelThreadFileShareEvent,
     SlackUser,
-    Submission
+    Submission,
+    RequestType
 } from './slack/api_interfaces';
 import { store } from './../util/secrets';
 import {
@@ -70,7 +71,7 @@ const support = {
         jira: Jira,
         submission: Submission,
         user: SlackUser,
-        request_type: string
+        request_type: RequestType
     ): void {
         const config = supportConfig(support.configName(slack));
         const message_text = config.messageText(
@@ -193,7 +194,7 @@ const support = {
         slack: Slack,
         jira: Jira,
         payload: ViewSubmission,
-        request_type: string,
+        request_type: RequestType,
         res: Response
     ): Response {
         const { user, view } = payload;

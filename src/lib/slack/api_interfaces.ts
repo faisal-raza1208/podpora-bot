@@ -175,6 +175,10 @@ interface Submission {
     [index: string]: string | undefined;
 }
 
+type SupportRequestType = 'bug' | 'data'
+type ProductRequestType = 'idea'
+type RequestType = SupportRequestType | ProductRequestType
+
 export {
     PostCommandPayload,
     InteractionTypes,
@@ -194,5 +198,6 @@ export {
     ViewSubmissionInputValue,
     ViewSubmissionSelectValue,
     Shortcut,
-    BlockActions
+    BlockActions,
+    RequestType
 };

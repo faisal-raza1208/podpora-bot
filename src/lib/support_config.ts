@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { View } from '@slack/web-api';
 import {
+    RequestType,
     SlackUser,
     Submission,
     ViewSubmission
@@ -31,12 +32,12 @@ interface SupportConfig {
     issueParams: (
         submission: Submission,
         user: SlackUser,
-        request_type: string
+        request_type: RequestType
     ) => CreateIssue,
     messageText: (
         submission: Submission,
         user: SlackUser,
-        request_type: string
+        request_type: RequestType
     ) => string
 }
 
@@ -103,7 +104,7 @@ configs.default = {
     issueParams: function(
         submission: Submission,
         user: SlackUser,
-        request_type: string,
+        request_type: RequestType
     ): CreateIssue {
         const board = 'SUP';
         const title_and_desc = normalisedTitleAndDesc(submission);
@@ -142,7 +143,7 @@ Submitted by: ${user.name}`;
     messageText(
         submission: Submission,
         user: SlackUser,
-        request_type: string
+        request_type: RequestType
     ): string {
         if (request_type === 'bug') {
             return `<@${user.id}> has submitted a bug report:\n\n` +
@@ -182,7 +183,7 @@ configs.syft = {
     issueParams: function(
         submission: Submission,
         user: SlackUser,
-        request_type: string,
+        request_type: RequestType,
     ): CreateIssue {
         const title_and_desc = normalisedTitleAndDesc(submission);
         const title = title_and_desc.title;
@@ -231,7 +232,7 @@ Submitted by: ${user.name}`;
     messageText(
         submission: Submission,
         user: SlackUser,
-        request_type: string
+        request_type: RequestType
     ): string {
         return configs.default.messageText(submission, user, request_type);
     }

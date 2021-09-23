@@ -12,7 +12,8 @@ import {
     InteractionTypes,
     PostInteractionPayload,
     Shortcut,
-    BlockActions
+    BlockActions,
+    RequestType
 } from '../../../lib/slack/api_interfaces';
 
 function handleViewSubmission(params: ViewSubmission, res: Response): Response {
@@ -26,13 +27,13 @@ function handleViewSubmission(params: ViewSubmission, res: Response): Response {
 
     if (type === 'support') {
         return support.handleViewSubmission(
-            slack, jira, params, subtype, res
+            slack, jira, params, (subtype as RequestType), res
         );
     }
 
     if (type === 'product') {
         return product.handleViewSubmission(
-            slack, jira, params, subtype, res
+            slack, jira, params, (subtype as RequestType), res
         );
     }
 
