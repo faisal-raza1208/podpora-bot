@@ -60,12 +60,15 @@ interface Shortcut extends Interaction {
 }
 
 interface ViewSubmissionBlockValue {
-    [index: string]: ViewSubmissionInputValue | ViewSubmissionSelectValue
+    [index: string]:
+        | ViewSubmissionInputValue
+        | ViewSubmissionSelectValue
+        | ViewSubmissionMultiSelectValue
 }
 
 interface ViewSubmissionInputValue {
     type: string,
-    value: string
+    value: string | null
 }
 
 interface ViewSubmissionSelectValue {
@@ -75,6 +78,15 @@ interface ViewSubmissionSelectValue {
             text: string
         }
     }
+}
+
+interface ViewSubmissionMultiSelectValue {
+    type: string,
+    selected_options: {
+        text: {
+            text: string
+        }
+    }[]
 }
 
 interface ViewSubmission extends Interaction {
@@ -197,6 +209,7 @@ export {
     ViewSubmission,
     ViewSubmissionInputValue,
     ViewSubmissionSelectValue,
+    ViewSubmissionMultiSelectValue,
     Shortcut,
     BlockActions,
     RequestType

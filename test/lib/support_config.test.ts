@@ -1,5 +1,6 @@
 import supportConfig from '../../src/lib/support_config';
 import feature from '../../src/util/feature';
+import { ViewSubmission } from '../../src/lib/slack/api_interfaces';
 
 describe('supportConfig', () => {
     const slack_user = { id: 'foo-user-id', name: 'Joe Doe' };
@@ -46,6 +47,61 @@ Submitted by: ${slack_user.name}`;
                             description: desc,
                             labels: ['support']
                         }
+                    });
+                });
+
+                describe('feature: new_bug_fields', () => {
+                    const request_type = 'bug';
+                    const submission = {
+                        title: 'A',
+                        description: 'B',
+                        currently: 'C',
+                        expected: 'D',
+                        component: 'E',
+                        version: 'F',
+                        employer: 'G',
+                        worker: 'H',
+                        listing: 'I',
+                        shift: 'J',
+                        test_data: 'K',
+                        region: 'L',
+                        device: 'M'
+                    };
+
+                    const newFieldLabels = [
+                        'Component/Platform',
+                        'App version',
+                        'Employer ID',
+                        'Worker ID',
+                        'Listing ID',
+                        'Shift ID',
+                        'Test data',
+                        'Region/Country',
+                        'Device'
+                    ];
+
+                    it.each(newFieldLabels)('sends the "%s" label in the description', label => {
+                        const featureSpy = jest.spyOn(feature, 'is_enabled');
+                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+
+                        const { description } = config
+                            .issueParams(submission, slack_user, request_type).fields;
+                        expect(description).toContain(label);
+
+                        featureSpy.mockRestore();
+                    });
+
+                    const submissionValues = Object.values(submission);
+
+                    it.each(submissionValues)('sends the "%s" value in the message', value => {
+                        const featureSpy = jest.spyOn(feature, 'is_enabled');
+                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+
+                        const { description } = config
+                            .issueParams(submission, slack_user, request_type).fields;
+                        expect(description).toContain(value);
+
+                        featureSpy.mockRestore();
                     });
                 });
             });
@@ -158,11 +214,69 @@ Submitted by: ${slack_user.name}`;
                 description: 'B',
                 reason: 'C'
             };
+
             it('returns a string', () => {
                 const result = config.messageText(submission, slack_user, request_type);
                 expect(result).toContain('*A*');
                 expect(result).toContain('B');
                 expect(result).toContain('C');
+            });
+
+            describe('feature: new_bug_fields', () => {
+                const request_type = 'bug';
+                const submission = {
+                    title: 'A',
+                    description: 'B',
+                    currently: 'C',
+                    expected: 'D',
+                    component: 'E',
+                    version: 'F',
+                    employer: 'G',
+                    worker: 'H',
+                    listing: 'I',
+                    shift: 'J',
+                    test_data: 'K',
+                    region: 'L',
+                    device: 'M'
+                };
+
+                const newFieldLabels = [
+                    'Component/Platform',
+                    'App version',
+                    'Employer ID',
+                    'Worker ID',
+                    'Listing ID',
+                    'Shift ID',
+                    'Test data',
+                    'Region/Country',
+                    'Device'
+                ];
+
+                it.each(newFieldLabels)('should include the "%s" label in the message', label => {
+                    const featureSpy = jest.spyOn(feature, 'is_enabled');
+                    featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+
+                    const messageText = config.messageText(submission, slack_user, request_type);
+                    expect(messageText).toContain(label);
+
+                    featureSpy.mockRestore();
+                });
+
+                const submissionValues = Object.values(submission)
+                    .map((value, i) => {
+                        if (i === 0) return `*${value}*`;
+                        return value;
+                    });
+
+                it.each(submissionValues)('should include the "%s" value in the message', value => {
+                    const featureSpy = jest.spyOn(feature, 'is_enabled');
+                    featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+
+                    const messageText = config.messageText(submission, slack_user, request_type);
+                    expect(messageText).toContain(value);
+
+                    featureSpy.mockRestore();
+                });
             });
         });
 
@@ -184,6 +298,284 @@ Submitted by: ${slack_user.name}`;
 
             it('matches expected text', () => {
                 expect(config.commandsHelpText()).toEqual(expected_text);
+            });
+        });
+
+        describe('#viewToSubmission(view, request_type)', () => {
+            describe('bug submission', () => {
+                const viewSubmissionView: Partial<ViewSubmission['view']> = {
+                    state: {
+                        values: {
+                            sl_title_block: {
+                                sl_title: {
+                                    type: 'plain_text_input',
+                                    value: 'A'
+                                },
+                            },
+                            ml_description_block: {
+                                ml_description: {
+                                    type: 'plain_text_input',
+                                    value: 'B'
+                                },
+                            },
+                            sl_currently_block: {
+                                sl_currently: {
+                                    type: 'plain_text_input',
+                                    value: 'C'
+                                },
+                            },
+                            sl_expected_block: {
+                                sl_expected: {
+                                    type: 'plain_text_input',
+                                    value: 'D'
+                                },
+                            },
+                        }
+                    }
+                };
+
+                const submission = config
+                    .viewToSubmission(
+                        viewSubmissionView as ViewSubmission['view'], 'bug'
+                    );
+
+                const fields = Object.keys(
+                    (viewSubmissionView as ViewSubmission['view']).state.values
+                )
+                    .map(key => key.split('_')[1]);
+
+                it.each(fields)('includes the "%s" property', field => {
+                    expect(submission[field]).toBeDefined();
+                });
+
+                describe('feature: new_bug_fields', () => {
+                    const viewSubmissionView: Partial<ViewSubmission['view']> = {
+                        state: {
+                            values: {
+                                sl_title_block: {
+                                    sl_title: {
+                                        type: 'plain_text_input',
+                                        value: 'A'
+                                    },
+                                },
+                                ml_description_block: {
+                                    ml_description: {
+                                        type: 'plain_text_input',
+                                        value: 'B'
+                                    },
+                                },
+                                ms_component_block: {
+                                    ms_component: {
+                                        type: 'multi_static_select',
+                                        selected_options: [
+                                            {
+                                                text: { text: 'C1' }
+                                            },
+                                            {
+                                                text: { text: 'C2' }
+                                            },
+                                        ]
+                                    },
+                                },
+                                sl_version_block: {
+                                    sl_version: {
+                                        type: 'plain_text_input',
+                                        value: 'D'
+                                    },
+                                },
+                                sl_employer_block: {
+                                    sl_employer: {
+                                        type: 'plain_text_input',
+                                        value: 'E'
+                                    },
+                                },
+                                sl_worker_block: {
+                                    sl_worker: {
+                                        type: 'plain_text_input',
+                                        value: 'F'
+                                    },
+                                },
+                                sl_listing_block: {
+                                    sl_listing: {
+                                        type: 'plain_text_input',
+                                        value: 'G'
+                                    },
+                                },
+                                sl_shift_block: {
+                                    sl_shift: {
+                                        type: 'plain_text_input',
+                                        value: 'H'
+                                    },
+                                },
+                                sl_test_data_block: {
+                                    sl_test_data: {
+                                        type: 'plain_text_input',
+                                        value: 'I'
+                                    },
+                                },
+                                ss_region_block: {
+                                    ss_region: {
+                                        type: 'static_select',
+                                        selected_option: {
+                                            text: { text: 'J' }
+                                        }
+                                    },
+                                },
+                                ss_device_block: {
+                                    ss_device: {
+                                        type: 'static_select',
+                                        selected_option: {
+                                            text: { text: 'K' }
+                                        }
+                                    },
+                                },
+                                sl_currently_block: {
+                                    sl_currently: {
+                                        type: 'plain_text_input',
+                                        value: 'L'
+                                    },
+                                },
+                                sl_expected_block: {
+                                    sl_expected: {
+                                        type: 'plain_text_input',
+                                        value: 'M'
+                                    },
+                                },
+                            }
+                        }
+                    };
+
+                    const fields = Object.keys(
+                        (viewSubmissionView as ViewSubmission['view']).state.values
+                    )
+                        .map(key => {
+                            if (key === 'sl_test_data_block') return 'test_data';
+                            return key.split('_')[1];
+                        });
+
+                    it.each(fields)('includes the "%s" property', field => {
+                        const featureSpy = jest.spyOn(feature, 'is_enabled');
+                        featureSpy.mockImplementation(flag => flag === 'new_bug_fields');
+
+                        const submission = config
+                            .viewToSubmission(
+                                viewSubmissionView as ViewSubmission['view'], 'bug'
+                            );
+
+                        expect(submission[field]).toBeDefined();
+
+                        featureSpy.mockRestore();
+                    });
+
+                    describe('undefined fields', () => {
+                        const viewSubmissionView: Partial<ViewSubmission['view']> = {
+                            state: {
+                                values: {
+                                    sl_title_block: {
+                                        sl_title: {
+                                            type: 'plain_text_input',
+                                            value: null
+                                        },
+                                    },
+                                    ml_description_block: {
+                                        ml_description: {
+                                            type: 'plain_text_input',
+                                            value: null
+                                        },
+                                    },
+                                    sl_currently_block: {
+                                        sl_currently: {
+                                            type: 'plain_text_input',
+                                            value: null
+                                        },
+                                    },
+                                    sl_expected_block: {
+                                        sl_expected: {
+                                            type: 'plain_text_input',
+                                            value: null
+                                        },
+                                    },
+                                    ms_component_block: {
+                                        ms_component: {
+                                            type: 'multi_static_select',
+                                            selected_options: []
+                                        },
+                                    },
+                                    sl_version_block: {
+                                        sl_version: {
+                                            type: 'plain_text_input',
+                                            value: null
+                                        },
+                                    },
+                                    sl_employer_block: {
+                                        sl_employer: {
+                                            type: 'plain_text_input',
+                                            value: null
+                                        },
+                                    },
+                                    sl_worker_block: {
+                                        sl_worker: {
+                                            type: 'plain_text_input',
+                                            value: null
+                                        },
+                                    },
+                                    sl_listing_block: {
+                                        sl_listing: {
+                                            type: 'plain_text_input',
+                                            value: null
+                                        },
+                                    },
+                                    sl_shift_block: {
+                                        sl_shift: {
+                                            type: 'plain_text_input',
+                                            value: null
+                                        },
+                                    },
+                                    sl_test_data_block: {
+                                        sl_test_data: {
+                                            type: 'plain_text_input',
+                                            value: null
+                                        },
+                                    },
+                                    ss_region_block: {
+                                        ss_region: {
+                                            type: 'static_select',
+                                            selected_option: null
+                                        },
+                                    },
+                                    ss_device_block: {
+                                        ss_device: {
+                                            type: 'static_select',
+                                            selected_option: null
+                                        },
+                                    },
+                                }
+                            }
+                        };
+
+                        const fields = Object.keys(
+                            (viewSubmissionView as ViewSubmission['view']).state.values
+                        )
+                            .map(key => {
+                                if (key === 'sl_test_data_block') return 'test_data';
+                                return key.split('_')[1];
+                            });
+
+                        it.each(fields)('includes the "%s" property', field => {
+                            const featureSpy = jest.spyOn(feature, 'is_enabled');
+                            featureSpy.mockImplementation(flag => flag === 'new_bug_fields');
+
+                            const submission = config
+                                .viewToSubmission(
+                                    viewSubmissionView as ViewSubmission['view'], 'bug'
+                                );
+
+                            expect(submission[field]).toBeUndefined();
+
+                            featureSpy.mockRestore();
+                        });
+                    });
+                });
             });
         });
     });

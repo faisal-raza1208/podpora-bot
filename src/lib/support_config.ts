@@ -13,6 +13,8 @@ import {
 import {
     normalisedTitleAndDesc,
     viewInputVal,
+    viewSelectedVal,
+    viewMultiSelectedVal,
     SlackCommand
 } from './slack_jira_helpers';
 import feature from '../util/feature';
@@ -64,16 +66,28 @@ function viewToSubmission(
 ): Submission {
     const values = view.state.values;
     const submission: Submission = {};
-    submission.title = viewInputVal('sl_title', values) as string;
-    submission.description = viewInputVal('ml_description', values) as string;
+    submission.title = viewInputVal('sl_title', values);
+    submission.description = viewInputVal('ml_description', values);
 
     if (request_type === 'bug') {
         submission.currently = viewInputVal('sl_currently', values);
         submission.expected = viewInputVal('sl_expected', values);
+
+        if (feature.is_enabled('new_bug_fields')) {
+            submission.component = viewMultiSelectedVal('ms_component', values);
+            submission.version = viewInputVal('sl_version', values);
+            submission.employer = viewInputVal('sl_employer', values);
+            submission.worker = viewInputVal('sl_worker', values);
+            submission.listing = viewInputVal('sl_listing', values);
+            submission.shift = viewInputVal('sl_shift', values);
+            submission.test_data = viewInputVal('sl_test_data', values);
+            submission.region = viewSelectedVal('ss_region', values);
+            submission.device = viewSelectedVal('ss_device', values);
+        }
     }
 
     if (request_type === 'data') {
-        submission.reason = viewInputVal('ml_reason', values) as string;
+        submission.reason = viewInputVal('ml_reason', values);
     }
 
     return submission;
@@ -146,11 +160,24 @@ Submitted by: ${user.name}`;
         request_type: RequestType
     ): string {
         if (request_type === 'bug') {
+            const newBugFields = feature.is_enabled('new_bug_fields')
+                ? `*Component/Platform*\n\n${submission.component}\n\n` +
+                `*Region/Country*\n\n${submission.region}\n\n` +
+                `*App version*\n\n${submission.version}\n\n` +
+                `*Employer ID*\n\n${submission.employer}\n\n` +
+                `*Worker ID*\n\n${submission.worker}\n\n` +
+                `*Listing ID*\n\n${submission.listing}\n\n` +
+                `*Shift ID*\n\n${submission.shift}\n\n` +
+                `*Test data*\n\n${submission.test_data}\n\n` +
+                `*Device*\n\n${submission.device}\n\n`
+                : '';
+
             return `<@${user.id}> has submitted a bug report:\n\n` +
                 `*${submission.title}*\n\n` +
                 `*Steps to Reproduce*\n\n${submission.description}\n\n` +
                 `*Currently*\n\n${submission.currently}\n\n` +
-                `*Expected*\n\n${submission.expected}`;
+                `*Expected*\n\n${submission.expected}` +
+                newBugFields;
         } else {
             return `<@${user.id}> has submitted a data request:\n\n` +
                 `*${submission.title}*\n\n${submission.description}\n` +
@@ -158,7 +185,6 @@ Submitted by: ${user.name}`;
         }
     }
 };
-
 
 configs.syft = {
     commands: [
@@ -200,13 +226,47 @@ configs.syft = {
 
         if (request_type === 'bug') {
             fields.issuetype.name = 'Bug';
+
             fields.description = `${desc}
 
 Currently:
 ${submission.currently}
 
 Expected:
-${submission.expected}
+${submission.expected}`;
+
+            if (feature.is_enabled('new_bug_fields')) {
+                fields.description = `${fields.description}
+
+Component/Platform:
+${submission.component}
+
+Region/Country:
+${submission.region}
+
+App version:
+${submission.version}
+
+Employer ID:
+${submission.employer}
+
+Worker ID
+${submission.worker}
+
+Listing ID:
+${submission.listing}
+
+Shift ID:
+${submission.shift}
+
+Test data:
+${submission.test_data}
+
+Device:
+${submission.device}`;
+            }
+
+            fields.description = `${fields.description}
 
 Submitted by: ${user.name}`;
 

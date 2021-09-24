@@ -5,7 +5,8 @@ import {
     isSlackImageFile,
     ViewSubmission,
     ViewSubmissionInputValue,
-    ViewSubmissionSelectValue
+    ViewSubmissionSelectValue,
+    ViewSubmissionMultiSelectValue
 } from './slack/api_interfaces';
 import {
     IssueChangelog
@@ -57,21 +58,30 @@ function slackFileToText(file: SlackFiles): string {
 function viewInputVal(
     id: string,
     values: ViewSubmission['view']['state']['values']
-): string {
+): string | undefined {
     const input = values[id + '_block'][id] as ViewSubmissionInputValue;
-    return input.value;
+    return input.value || undefined;
 }
 
 function viewSelectedVal(
     id: string,
     values: ViewSubmission['view']['state']['values']
-): string | null {
+): string | undefined {
     const elm = values[id + '_block'][id] as ViewSubmissionSelectValue;
-    if (elm.selected_option) {
-        return elm.selected_option.text.text;
+    return elm.selected_option?.text.text;
+}
+
+function viewMultiSelectedVal(
+    id: string,
+    values: ViewSubmission['view']['state']['values']
+): string | undefined {
+    const elm = values[id + '_block'][id] as ViewSubmissionMultiSelectValue;
+
+    if (elm.selected_options.length) {
+        return elm.selected_options.map(({ text }) => text.text).join(', ');
     }
 
-    return null;
+    return undefined;
 }
 
 function statusChangeMessage(
@@ -122,5 +132,6 @@ export {
     statusChangeMessage,
     viewInputVal,
     viewSelectedVal,
+    viewMultiSelectedVal,
     normalisedTitleAndDesc
 };
