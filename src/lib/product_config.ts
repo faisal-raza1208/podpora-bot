@@ -11,7 +11,8 @@ import {
 import {
     normalisedTitleAndDesc,
     viewInputVal,
-    viewSelectedVal
+    viewSelectedVal,
+    SlackCommand
 } from './slack_jira_helpers';
 import {
     CreateIssue
@@ -21,14 +22,8 @@ interface Views {
     [index: string]: View
 }
 
-interface SlackProductCommand {
-    name: string,
-    desc: string,
-    example: string
-}
-
 interface ProductConfig {
-    commands: Array<SlackProductCommand>,
+    commands: Array<SlackCommand>,
     view: (key: string) => View,
     viewToSubmission: (
         view: ViewSubmission['view'],
