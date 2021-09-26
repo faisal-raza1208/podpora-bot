@@ -17,30 +17,11 @@ import {
     viewMultiSelectedVal,
     SlackCommand
 } from './slack_jira_helpers';
+import Config from './config';
 import feature from '../util/feature';
 
 interface Views {
     [index: string]: View
-}
-
-interface SupportConfig {
-    commands: Array<SlackCommand>,
-    commandsHelpText: () => string,
-    view: (key: string) => View,
-    viewToSubmission: (
-        view: ViewSubmission['view'],
-        request_type: RequestType
-    ) => Submission,
-    issueParams: (
-        submission: Submission,
-        user: SlackUser,
-        request_type: RequestType
-    ) => CreateIssue,
-    messageText: (
-        submission: Submission,
-        user: SlackUser,
-        request_type: RequestType
-    ) => string
 }
 
 const viewsDirectoryPath = path.join(__dirname, '..', 'views', 'support', 'default');
@@ -93,7 +74,7 @@ function viewToSubmission(
     return submission;
 }
 
-const configs: { [index: string]: SupportConfig } = {};
+const configs: { [index: string]: Config } = {};
 
 configs.default = {
     commands: [
@@ -298,6 +279,6 @@ Submitted by: ${user.name}`;
     }
 };
 
-export default function supportConfig(key: string): SupportConfig {
+export default function supportConfig(key: string): Config {
     return configs[key];
 }

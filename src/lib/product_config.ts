@@ -17,28 +17,10 @@ import {
 import {
     CreateIssue
 } from './jira/api_interfaces';
+import Config from './config';
 
 interface Views {
     [index: string]: View
-}
-
-interface ProductConfig {
-    commands: Array<SlackCommand>,
-    view: (key: string) => View,
-    viewToSubmission: (
-        view: ViewSubmission['view'],
-        request_type: RequestType
-    ) => Submission,
-    issueParams: (
-        submission: Submission,
-        user: SlackUser,
-        request_type: RequestType
-    ) => CreateIssue,
-    messageText: (
-        submission: Submission,
-        user: SlackUser,
-        request_type: RequestType
-    ) => string
 }
 
 const viewsDirectoryPath = path.join(__dirname, '..', 'views', 'product', 'default');
@@ -51,6 +33,12 @@ fs.readdirSync(viewsDirectoryPath).reduce((acc, name: string) => {
     return acc;
 }, views);
 
+function commandsHelpText(commands: Array<SlackCommand>): string {
+    return '👋 Need help with product bot?\n\n' + commands.map(
+        (cmd) => {
+            return `> ${cmd.desc}:\n>\`${cmd.example}\``;
+        }).join('\n\n');
+}
 
 function viewToSubmission(
     view: ViewSubmission['view'],
@@ -75,7 +63,7 @@ function viewToSubmission(
     return submission;
 }
 
-const configs: { [index: string]: ProductConfig } = {};
+const configs: { [index: string]: Config } = {};
 
 configs.default = {
     commands: [
@@ -85,6 +73,9 @@ configs.default = {
             example: '/idea'
         }
     ],
+    commandsHelpText: function(): string {
+        return commandsHelpText(this.commands);
+    },
     view: function(key: string): View {
         return views[key];
     },
@@ -142,6 +133,6 @@ Submitted by: ${user.name}`;
     }
 };
 
-export default function productConfig(key: string): ProductConfig {
+export default function productConfig(key: string): Config {
     return configs[key];
 }
