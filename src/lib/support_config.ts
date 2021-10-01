@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import { View } from '@slack/web-api';
 import {
     RequestType,
@@ -18,21 +16,8 @@ import {
     SlackCommand
 } from './slack_jira_helpers';
 import Config from './config';
+import views from './views';
 import feature from '../util/feature';
-
-interface Views {
-    [index: string]: View
-}
-
-const viewsDirectoryPath = path.join(__dirname, '..', 'views', 'support', 'default');
-const views: Views = {};
-fs.readdirSync(viewsDirectoryPath).reduce((acc, name: string) => {
-    const fpath = path.join(viewsDirectoryPath, name);
-    acc[path.parse(fpath).name] = JSON.parse(
-        fs.readFileSync(fpath).toString()
-    );
-    return acc;
-}, views);
 
 function commandsHelpText(commands: Array<SlackCommand>): string {
     return '👋 Need help with support bot?\n\n' + commands.map(
@@ -93,7 +78,7 @@ configs.default = {
         return commandsHelpText(this.commands);
     },
     view: function(key: string): View {
-        return views[key];
+        return views.support.default[key];
     },
     viewToSubmission: viewToSubmission,
     issueParams: function(
@@ -184,7 +169,7 @@ configs.syft = {
         return commandsHelpText(this.commands);
     },
     view: function(key: string): View {
-        return configs.default.view(key);
+        return views.support.default[key];
     },
     viewToSubmission: viewToSubmission,
     issueParams: function(

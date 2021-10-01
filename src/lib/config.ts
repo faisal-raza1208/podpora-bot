@@ -12,8 +12,6 @@ import {
     CreateIssue
 } from './jira/api_interfaces';
 
-// import feature from '../util/feature';
-
 interface Config {
     commands: Array<SlackCommand>,
     commandsHelpText: () => string,
