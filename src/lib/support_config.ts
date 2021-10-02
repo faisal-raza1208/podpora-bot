@@ -6,15 +6,15 @@ import {
     ViewSubmission
 } from './slack/api_interfaces';
 import {
-    CreateIssue
-} from './jira/api_interfaces';
-import {
     normalisedTitleAndDesc,
     viewInputVal,
     viewSelectedVal,
     viewMultiSelectedVal,
     SlackCommand
 } from './slack_jira_helpers';
+import {
+    CreateIssue
+} from './jira/api_interfaces';
 import Config from './config';
 import views from './views';
 import feature from '../util/feature';

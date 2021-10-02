@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import slugify from '@sindresorhus/slugify';
 import { View } from '@slack/web-api';
 import {
@@ -18,20 +16,7 @@ import {
     CreateIssue
 } from './jira/api_interfaces';
 import Config from './config';
-
-interface Views {
-    [index: string]: View
-}
-
-const viewsDirectoryPath = path.join(__dirname, '..', 'views', 'product', 'default');
-const views: Views = {};
-fs.readdirSync(viewsDirectoryPath).reduce((acc, name: string) => {
-    const fpath = path.join(viewsDirectoryPath, name);
-    acc[path.parse(fpath).name] = JSON.parse(
-        fs.readFileSync(fpath).toString()
-    );
-    return acc;
-}, views);
+import views from './views';
 
 function commandsHelpText(commands: Array<SlackCommand>): string {
     return '👋 Need help with product bot?\n\n' + commands.map(
@@ -77,7 +62,7 @@ configs.default = {
         return commandsHelpText(this.commands);
     },
     view: function(key: string): View {
-        return views[key];
+        return views.product.default[key];
     },
     viewToSubmission: viewToSubmission,
     issueParams: function(

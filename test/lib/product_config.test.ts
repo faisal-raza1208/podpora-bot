@@ -143,5 +143,15 @@ Submitted by: ${slack_user.name}`;
                 expect(result).toContain('E');
             });
         });
+
+        describe('#commandsHelpText()', () => {
+            const expected_text =
+                '👋 Need help with product bot?\n\n'
+                + '> Submit new product idea:\n>`/idea`';
+
+            it('matches expected text', () => {
+                expect(config.commandsHelpText()).toEqual(expected_text);
+            });
+        });
     });
 });
