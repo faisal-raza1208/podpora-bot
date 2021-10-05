@@ -31,7 +31,7 @@ import feature from '../util/feature';
 const support = {
     showForm(
         slack: Slack,
-        request_type: string,
+        request_type: RequestType,
         trigger_id: string
     ): Promise<WebAPICallResult> {
         const errorHandler = (error: Error): Promise<WebAPICallResult> => {
@@ -160,7 +160,7 @@ const support = {
         const commands = config.commands;
         const requests_types = commandsNames(commands);
         if (requests_types.includes(args[0])) {
-            support.showForm(slack, args[0], trigger_id);
+            support.showForm(slack, (args[0] as RequestType), trigger_id);
             return res.status(200).send();
         } else if (args[0] === 'ping') {
             return res.json({
@@ -180,7 +180,7 @@ const support = {
         const config = supportConfig(support.configName(slack));
 
         if (commandsNames(config.commands).includes(command_name)) {
-            support.showForm(slack, command_name, trigger_id);
+            support.showForm(slack, (command_name as RequestType), trigger_id);
         } else {
             logger.debug(
                 'handleShortcut',

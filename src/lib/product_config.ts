@@ -32,7 +32,7 @@ interface ProductConfig {
     view: (key: string) => View,
     viewToSubmission: (
         view: ViewSubmission['view'],
-        request_type: string
+        request_type: RequestType
     ) => Submission,
     issueParams: (
         submission: Submission,
@@ -60,7 +60,7 @@ fs.readdirSync(viewsDirectoryPath).reduce((acc, name: string) => {
 function viewToSubmission(
     view: ViewSubmission['view'],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    request_type: string
+    request_type: RequestType
 ): Submission {
     const values = view.state.values;
     const submission: Submission = {};

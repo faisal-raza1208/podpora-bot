@@ -29,7 +29,7 @@ interface SupportConfig {
     view: (key: string) => View,
     viewToSubmission: (
         view: ViewSubmission['view'],
-        request_type: string
+        request_type: RequestType
     ) => Submission,
     issueParams: (
         submission: Submission,
@@ -62,7 +62,7 @@ function commandsHelpText(commands: Array<SlackCommand>): string {
 
 function viewToSubmission(
     view: ViewSubmission['view'],
-    request_type: string
+    request_type: RequestType
 ): Submission {
     const values = view.state.values;
     const submission: Submission = {};

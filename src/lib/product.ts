@@ -34,7 +34,7 @@ function productCommandsHelpText(commands: Array<SlackCommand>): string {
 const product = {
     showForm(
         slack: Slack,
-        request_type: string,
+        request_type: RequestType,
         trigger_id: string
     ): Promise<WebAPICallResult> {
         const view: View = productConfig(product.configName(slack)).view(request_type);
