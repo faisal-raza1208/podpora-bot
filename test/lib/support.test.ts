@@ -18,7 +18,7 @@ import {
 import {
     ChannelThreadFileShareEvent,
 } from '../../src/lib/slack/api_interfaces';
-import feature from '../../src/util/feature';
+// import feature from '../../src/util/feature';
 
 const logErrorSpy = jest.spyOn(logger, 'error').mockReturnValue({} as Logger);
 
@@ -91,10 +91,10 @@ describe('#showForm()', () => {
     });
 
     describe('fields', () => {
-        it('sends "sl_title" field', () => {
+        it('sends modal form with title and description fields', () => {
             let api_call_body = '';
 
-            expect.assertions(1);
+            expect.assertions(2);
             nock('https://slack.com')
                 .post('/api/views.open', body => {
                     api_call_body = JSON.stringify(body);
@@ -105,29 +105,8 @@ describe('#showForm()', () => {
             return support.showForm(slack, 'bug', 'abc')
                 .then(() => {
                     expect(api_call_body).toContain('sl_title');
+                    expect(api_call_body).toContain('ml_description');
                 });
-        });
-
-        describe('feature: new_bug_fields', () => {
-            it('sends "ms_component" field', () => {
-                const featureSpy = jest.spyOn(feature, 'is_enabled');
-                featureSpy.mockImplementationOnce(() => true);
-
-                let api_call_body = '';
-
-                expect.assertions(1);
-                nock('https://slack.com')
-                    .post('/api/views.open', body => {
-                        api_call_body = JSON.stringify(body);
-                        return body;
-                    })
-                    .reply(200, { ok: true });
-
-                return support.showForm(slack, 'bug', 'abc')
-                    .then(() => {
-                        expect(api_call_body).toContain('ms_component');
-                    });
-            });
         });
     });
 });

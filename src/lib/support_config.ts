@@ -154,7 +154,11 @@ configs.syft = {
         return commandsHelpText(this.commands);
     },
     view: function(key: string): View {
-        return views.support.default[key];
+        const view_name = (feature.is_enabled('new_bug_fields') && key === 'bug')
+            ? 'bug-new'
+            : key;
+
+        return views.support.default[view_name];
     },
     viewToSubmission: function(
         view: ViewSubmission['view'], request_type: RequestType

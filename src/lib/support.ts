@@ -25,7 +25,7 @@ import {
     fileShareEventToIssueComment
 } from './slack_jira_helpers';
 
-import feature from '../util/feature';
+// import feature from '../util/feature';
 // feature.is_enabled('feature_name')
 
 const support = {
@@ -39,12 +39,9 @@ const support = {
 
             return Promise.reject({ ok: false });
         };
-        const view_name = (feature.is_enabled('new_bug_fields') && request_type === 'bug')
-            ? 'bug-new'
-            : request_type;
 
         const config = supportConfig(support.configName(slack));
-        const view: View = config.view(view_name);
+        const view: View = config.view(request_type);
 
         return slack.showModalView(view, trigger_id)
             .catch(errorHandler);

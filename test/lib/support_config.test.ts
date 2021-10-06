@@ -288,6 +288,31 @@ Submitted by: ${slack_user.name}`;
                     new Set(Object.keys(result))
                 ).toEqual(new Set(['title', 'type', 'blocks', 'submit', 'private_metadata']));
             });
+
+            describe('feature: new_bug_fields', () => {
+                const featureSpy = jest.spyOn(feature, 'is_enabled');
+                featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+                const result = config.view('bug');
+                const blocks_ids = result.blocks.map((block) => { return block.block_id; });
+
+                expect(
+                    new Set(blocks_ids)
+                ).toEqual(new Set([
+                    'sl_title_block',
+                    'ml_description_block',
+                    'sl_currently_block',
+                    'sl_expected_block',
+                    'ms_component_block',
+                    'ss_region_block',
+                    'sl_version_block',
+                    'sl_employer_block',
+                    'sl_worker_block',
+                    'sl_listing_block',
+                    'sl_shift_block',
+                    'sl_test_data_block',
+                    'ss_device_block'
+                ]));
+            });
         });
 
         describe('#commandsHelpText()', () => {
