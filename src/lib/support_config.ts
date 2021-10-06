@@ -26,39 +26,6 @@ function commandsHelpText(commands: Array<SlackCommand>): string {
         }).join('\n\n');
 }
 
-function viewToSubmission(
-    view: ViewSubmission['view'],
-    request_type: RequestType
-): Submission {
-    const values = view.state.values;
-    const submission: Submission = {};
-    submission.title = viewInputVal('sl_title', values);
-    submission.description = viewInputVal('ml_description', values);
-
-    if (request_type === 'bug') {
-        submission.currently = viewInputVal('sl_currently', values);
-        submission.expected = viewInputVal('sl_expected', values);
-
-        if (feature.is_enabled('new_bug_fields')) {
-            submission.component = viewMultiSelectedVal('ms_component', values);
-            submission.version = viewInputVal('sl_version', values);
-            submission.employer = viewInputVal('sl_employer', values);
-            submission.worker = viewInputVal('sl_worker', values);
-            submission.listing = viewInputVal('sl_listing', values);
-            submission.shift = viewInputVal('sl_shift', values);
-            submission.test_data = viewInputVal('sl_test_data', values);
-            submission.region = viewSelectedVal('ss_region', values);
-            submission.device = viewSelectedVal('ss_device', values);
-        }
-    }
-
-    if (request_type === 'data') {
-        submission.reason = viewInputVal('ml_reason', values);
-    }
-
-    return submission;
-}
-
 const configs: { [index: string]: Config } = {};
 
 configs.default = {
@@ -80,7 +47,25 @@ configs.default = {
     view: function(key: string): View {
         return views.support.default[key];
     },
-    viewToSubmission: viewToSubmission,
+    viewToSubmission: function(
+        view: ViewSubmission['view'], request_type: RequestType
+    ): Submission {
+        const values = view.state.values;
+        const submission: Submission = {};
+        submission.title = viewInputVal('sl_title', values);
+        submission.description = viewInputVal('ml_description', values);
+
+        if (request_type === 'bug') {
+            submission.currently = viewInputVal('sl_currently', values);
+            submission.expected = viewInputVal('sl_expected', values);
+        }
+
+        if (request_type === 'data') {
+            submission.reason = viewInputVal('ml_reason', values);
+        }
+
+        return submission;
+    },
     issueParams: function(
         submission: Submission,
         user: SlackUser,
@@ -171,7 +156,37 @@ configs.syft = {
     view: function(key: string): View {
         return views.support.default[key];
     },
-    viewToSubmission: viewToSubmission,
+    viewToSubmission: function(
+        view: ViewSubmission['view'], request_type: RequestType
+    ): Submission {
+        const values = view.state.values;
+        const submission: Submission = {};
+        submission.title = viewInputVal('sl_title', values);
+        submission.description = viewInputVal('ml_description', values);
+
+        if (request_type === 'bug') {
+            submission.currently = viewInputVal('sl_currently', values);
+            submission.expected = viewInputVal('sl_expected', values);
+
+            if (feature.is_enabled('new_bug_fields')) {
+                submission.component = viewMultiSelectedVal('ms_component', values);
+                submission.version = viewInputVal('sl_version', values);
+                submission.employer = viewInputVal('sl_employer', values);
+                submission.worker = viewInputVal('sl_worker', values);
+                submission.listing = viewInputVal('sl_listing', values);
+                submission.shift = viewInputVal('sl_shift', values);
+                submission.test_data = viewInputVal('sl_test_data', values);
+                submission.region = viewSelectedVal('ss_region', values);
+                submission.device = viewSelectedVal('ss_device', values);
+            }
+        }
+
+        if (request_type === 'data') {
+            submission.reason = viewInputVal('ml_reason', values);
+        }
+
+        return submission;
+    },
     issueParams: function(
         submission: Submission,
         user: SlackUser,

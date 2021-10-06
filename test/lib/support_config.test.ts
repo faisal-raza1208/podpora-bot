@@ -577,6 +577,44 @@ Submitted by: ${slack_user.name}`;
                     });
                 });
             });
+
+            describe('data request submission', () => {
+                const viewSubmissionView: Partial<ViewSubmission['view']> = {
+                    state: {
+                        values: {
+                            sl_title_block: {
+                                sl_title: {
+                                    type: 'plain_text_input',
+                                    value: 'A'
+                                },
+                            },
+                            ml_description_block: {
+                                ml_description: {
+                                    type: 'plain_text_input',
+                                    value: 'B'
+                                },
+                            },
+                            ml_reason_block: {
+                                ml_reason: {
+                                    type: 'plain_text_input',
+                                    value: 'C'
+                                },
+                            },
+                        }
+                    }
+                };
+
+                const submission = config
+                    .viewToSubmission(
+                        viewSubmissionView as ViewSubmission['view'], 'data'
+                    );
+
+                it('contains all data request fields', () => {
+                    expect(submission.title).toEqual('A');
+                    expect(submission.description).toEqual('B');
+                    expect(submission.reason).toEqual('C');
+                });
+            });
         });
     });
 });
