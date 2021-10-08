@@ -208,18 +208,38 @@ Submitted by: ${slack_user.name}`;
         });
 
         describe('#messageText(submission, user, request_type)', () => {
-            const request_type = 'data';
-            const submission = {
-                title: 'A',
-                description: 'B',
-                reason: 'C'
-            };
+            describe('data', () => {
+                const request_type = 'data';
+                const submission = {
+                    title: 'A',
+                    description: 'B',
+                    reason: 'C'
+                };
 
-            it('returns a string', () => {
-                const result = config.messageText(submission, slack_user, request_type);
-                expect(result).toContain('*A*');
-                expect(result).toContain('B');
-                expect(result).toContain('C');
+                it('returns a string', () => {
+                    const result = config.messageText(submission, slack_user, request_type);
+                    expect(result).toContain('*A*');
+                    expect(result).toContain('B');
+                    expect(result).toContain('C');
+                });
+            });
+
+            describe('bug', () => {
+                const request_type = 'bug';
+                const submission = {
+                    title: 'A',
+                    description: 'B',
+                    currently: 'C',
+                    expected: 'D'
+                };
+
+                it('returns a string', () => {
+                    const result = config.messageText(submission, slack_user, request_type);
+                    expect(result).toContain('*A*');
+                    expect(result).toContain('B');
+                    expect(result).toContain('C');
+                    expect(result).toContain('D');
+                });
             });
 
             describe('feature: new_bug_fields', () => {
@@ -252,15 +272,20 @@ Submitted by: ${slack_user.name}`;
                     'Device'
                 ];
 
-                it.each(newFieldLabels)('should include the "%s" label in the message', label => {
-                    const featureSpy = jest.spyOn(feature, 'is_enabled');
-                    featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+                it.each(newFieldLabels)('should include the "%s" label in the message',
+                    label => {
+                        const featureSpy = jest.spyOn(feature, 'is_enabled');
+                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
 
-                    const messageText = config.messageText(submission, slack_user, request_type);
-                    expect(messageText).toContain(label);
+                        const messageText = config.messageText(
+                            submission,
+                            slack_user,
+                            request_type
+                        );
+                        expect(messageText).toContain(label);
 
-                    featureSpy.mockRestore();
-                });
+                        featureSpy.mockRestore();
+                    });
 
                 const submissionValues = Object.values(submission)
                     .map((value, i) => {
@@ -268,15 +293,20 @@ Submitted by: ${slack_user.name}`;
                         return value;
                     });
 
-                it.each(submissionValues)('should include the "%s" value in the message', value => {
-                    const featureSpy = jest.spyOn(feature, 'is_enabled');
-                    featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+                it.each(submissionValues)('should include the "%s" value in the message',
+                    value => {
+                        const featureSpy = jest.spyOn(feature, 'is_enabled');
+                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
 
-                    const messageText = config.messageText(submission, slack_user, request_type);
-                    expect(messageText).toContain(value);
+                        const messageText = config.messageText(
+                            submission,
+                            slack_user,
+                            request_type
+                        );
+                        expect(messageText).toContain(value);
 
-                    featureSpy.mockRestore();
-                });
+                        featureSpy.mockRestore();
+                    });
             });
         });
 

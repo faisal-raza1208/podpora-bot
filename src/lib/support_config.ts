@@ -111,24 +111,11 @@ Submitted by: ${user.name}`;
         request_type: RequestType
     ): string {
         if (request_type === 'bug') {
-            const newBugFields = feature.is_enabled('new_bug_fields')
-                ? `*Component/Platform*\n\n${submission.component}\n\n` +
-                `*Region/Country*\n\n${submission.region}\n\n` +
-                `*App version*\n\n${submission.version}\n\n` +
-                `*Employer ID*\n\n${submission.employer}\n\n` +
-                `*Worker ID*\n\n${submission.worker}\n\n` +
-                `*Listing ID*\n\n${submission.listing}\n\n` +
-                `*Shift ID*\n\n${submission.shift}\n\n` +
-                `*Test data*\n\n${submission.test_data}\n\n` +
-                `*Device*\n\n${submission.device}\n\n`
-                : '';
-
             return `<@${user.id}> has submitted a bug report:\n\n` +
                 `*${submission.title}*\n\n` +
                 `*Steps to Reproduce*\n\n${submission.description}\n\n` +
                 `*Currently*\n\n${submission.currently}\n\n` +
-                `*Expected*\n\n${submission.expected}` +
-                newBugFields;
+                `*Expected*\n\n${submission.expected}`;
         } else {
             return `<@${user.id}> has submitted a data request:\n\n` +
                 `*${submission.title}*\n\n${submission.description}\n` +
@@ -279,7 +266,30 @@ Submitted by: ${user.name}`;
         user: SlackUser,
         request_type: RequestType
     ): string {
-        return configs.default.messageText(submission, user, request_type);
+        if (request_type === 'bug') {
+            const newBugFields = feature.is_enabled('new_bug_fields')
+                ? `*Component/Platform*\n\n${submission.component}\n\n` +
+                `*Region/Country*\n\n${submission.region}\n\n` +
+                `*App version*\n\n${submission.version}\n\n` +
+                `*Employer ID*\n\n${submission.employer}\n\n` +
+                `*Worker ID*\n\n${submission.worker}\n\n` +
+                `*Listing ID*\n\n${submission.listing}\n\n` +
+                `*Shift ID*\n\n${submission.shift}\n\n` +
+                `*Test data*\n\n${submission.test_data}\n\n` +
+                `*Device*\n\n${submission.device}\n\n`
+                : '';
+
+            return `<@${user.id}> has submitted a bug report:\n\n` +
+                `*${submission.title}*\n\n` +
+                `*Steps to Reproduce*\n\n${submission.description}\n\n` +
+                `*Currently*\n\n${submission.currently}\n\n` +
+                `*Expected*\n\n${submission.expected}` +
+                newBugFields;
+        } else {
+            return `<@${user.id}> has submitted a data request:\n\n` +
+                `*${submission.title}*\n\n${submission.description}\n` +
+                `Reason and urgency:\n${submission.reason}`;
+        }
     }
 };
 
