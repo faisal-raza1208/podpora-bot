@@ -283,7 +283,7 @@ Submitted by: ${user.name}`;
                 `*${submission.title}*\n\n` +
                 `*Steps to Reproduce*\n\n${submission.description}\n\n` +
                 `*Currently*\n\n${submission.currently}\n\n` +
-                `*Expected*\n\n${submission.expected}` +
+                `*Expected*\n\n${submission.expected}\n\n` +
                 newBugFields;
         } else {
             return `<@${user.id}> has submitted a data request:\n\n` +
