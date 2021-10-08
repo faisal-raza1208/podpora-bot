@@ -211,53 +211,53 @@ Submitted by: ${slack_user.name}`;
             describe('data', () => {
                 const request_type = 'data';
                 const submission = {
-                    title: 'A',
-                    description: 'B',
-                    reason: 'C'
+                    title: 'Test title',
+                    description: 'Test description',
+                    reason: 'Test reason'
                 };
 
                 it('returns a string', () => {
                     const result = config.messageText(submission, slack_user, request_type);
-                    expect(result).toContain('*A*');
-                    expect(result).toContain('B');
-                    expect(result).toContain('C');
+                    expect(result).toContain('*Test title*');
+                    expect(result).toContain('Test description');
+                    expect(result).toContain('Test reason');
                 });
             });
 
             describe('bug', () => {
                 const request_type = 'bug';
                 const submission = {
-                    title: 'A',
-                    description: 'B',
-                    currently: 'C',
-                    expected: 'D'
+                    title: 'Test title',
+                    description: 'Test description',
+                    currently: 'Test currently',
+                    expected: 'Test expected'
                 };
 
                 it('returns a string', () => {
                     const result = config.messageText(submission, slack_user, request_type);
-                    expect(result).toContain('*A*');
-                    expect(result).toContain('B');
-                    expect(result).toContain('C');
-                    expect(result).toContain('D');
+                    expect(result).toContain('*Test title*');
+                    expect(result).toContain('Test description');
+                    expect(result).toContain('Test currently');
+                    expect(result).toContain('Test expected');
                 });
             });
 
             describe('feature: new_bug_fields', () => {
                 const request_type = 'bug';
                 const submission = {
-                    title: 'A',
-                    description: 'B',
-                    currently: 'C',
-                    expected: 'D',
-                    component: 'E',
-                    version: 'F',
-                    employer: 'G',
-                    worker: 'H',
-                    listing: 'I',
-                    shift: 'J',
-                    test_data: 'K',
-                    region: 'L',
-                    device: 'M'
+                    title: 'Test A',
+                    description: 'Test B',
+                    currently: 'Test C',
+                    expected: 'Test D',
+                    component: 'Test E',
+                    version: 'Test F',
+                    employer: 'Test G',
+                    worker: 'Test H',
+                    listing: 'Test I',
+                    shift: 'Test J',
+                    test_data: 'Test K',
+                    region: 'Test L',
+                    device: 'Test M'
                 };
 
                 const newFieldLabels = [
