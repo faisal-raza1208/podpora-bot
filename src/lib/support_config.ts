@@ -145,7 +145,7 @@ configs.syft = {
             ? 'bug-new'
             : key;
 
-        return views.support.default[view_name];
+        return views.support.syft[view_name];
     },
     viewToSubmission: function(
         view: ViewSubmission['view'], request_type: RequestType
