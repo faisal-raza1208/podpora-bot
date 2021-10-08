@@ -210,32 +210,23 @@ ${submission.expected}`;
             if (feature.is_enabled('new_bug_fields')) {
                 fields.description = `${fields.description}
 
-Component/Platform:
-${submission.component}
+Component/Platform: ${submission.component}
 
-Region/Country:
-${submission.region}
+Region/Country: ${submission.region}
 
-App version:
-${submission.version}
+App version: ${submission.version}
 
-Employer ID:
-${submission.employer}
+Employer ID: ${submission.employer}
 
-Worker ID
-${submission.worker}
+Worker ID: ${submission.worker}
 
-Listing ID:
-${submission.listing}
+Listing ID: ${submission.listing}
 
-Shift ID:
-${submission.shift}
+Shift ID: ${submission.shift}
 
-Test data:
-${submission.test_data}
+Test data: ${submission.test_data}
 
-Device:
-${submission.device}`;
+Device: ${submission.device}`;
             }
 
             fields.description = `${fields.description}
@@ -268,15 +259,15 @@ Submitted by: ${user.name}`;
     ): string {
         if (request_type === 'bug') {
             const newBugFields = feature.is_enabled('new_bug_fields')
-                ? `*Component/Platform*\n\n${submission.component}\n\n` +
-                `*Region/Country*\n\n${submission.region}\n\n` +
-                `*App version*\n\n${submission.version}\n\n` +
-                `*Employer ID*\n\n${submission.employer}\n\n` +
-                `*Worker ID*\n\n${submission.worker}\n\n` +
-                `*Listing ID*\n\n${submission.listing}\n\n` +
-                `*Shift ID*\n\n${submission.shift}\n\n` +
-                `*Test data*\n\n${submission.test_data}\n\n` +
-                `*Device*\n\n${submission.device}\n\n`
+                ? `*Component/Platform*: ${submission.component}\n\n` +
+                `*Region/Country*: ${submission.region}\n\n` +
+                `*App version*: ${submission.version}\n\n` +
+                `*Employer ID*: ${submission.employer}\n\n` +
+                `*Worker ID*: ${submission.worker}\n\n` +
+                `*Listing ID*: ${submission.listing}\n\n` +
+                `*Shift ID*: ${submission.shift}\n\n` +
+                `*Test data*: ${submission.test_data}\n\n` +
+                `*Device*: ${submission.device}\n\n`
                 : '';
 
             return `<@${user.id}> has submitted a bug report:\n\n` +
