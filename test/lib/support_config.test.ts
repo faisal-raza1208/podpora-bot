@@ -68,7 +68,7 @@ Submitted by: ${slack_user.name}`;
                         device: 'M'
                     };
 
-                    const newFieldLabels = [
+                    const fieldLabels = [
                         'Component/Platform',
                         'App version',
                         'Employer ID',
@@ -80,7 +80,7 @@ Submitted by: ${slack_user.name}`;
                         'Device'
                     ];
 
-                    it.each(newFieldLabels)('sends the "%s" label in the description', label => {
+                    it.each(fieldLabels)('sends the "%s" label in the description', label => {
                         const featureSpy = jest.spyOn(feature, 'is_enabled');
                         featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
 
@@ -230,7 +230,7 @@ Submitted by: ${slack_user.name}`;
                     device: 'Test M'
                 };
 
-                const newFieldLabels = [
+                const fieldLabels = [
                     'Component/Platform',
                     'App version',
                     'Employer ID',
@@ -242,20 +242,19 @@ Submitted by: ${slack_user.name}`;
                     'Device'
                 ];
 
-                it.each(newFieldLabels)('should include the "%s" label in the message',
-                    label => {
-                        const featureSpy = jest.spyOn(feature, 'is_enabled');
-                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+                it.each(fieldLabels)('include the "%s" label in the message', (label) => {
+                    const featureSpy = jest.spyOn(feature, 'is_enabled');
+                    featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
 
-                        const messageText = config.messageText(
-                            submission,
-                            slack_user,
-                            request_type
-                        );
-                        expect(messageText).toContain(label);
+                    const messageText = config.messageText(
+                        submission,
+                        slack_user,
+                        request_type
+                    );
+                    expect(messageText).toContain(label);
 
-                        featureSpy.mockRestore();
-                    });
+                    featureSpy.mockRestore();
+                });
 
                 const submissionValues = Object.values(submission)
                     .map((value, i) => {
@@ -263,20 +262,19 @@ Submitted by: ${slack_user.name}`;
                         return value;
                     });
 
-                it.each(submissionValues)('should include the "%s" value in the message',
-                    value => {
-                        const featureSpy = jest.spyOn(feature, 'is_enabled');
-                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+                it.each(submissionValues)('include the "%s" value in the message', (value) => {
+                    const featureSpy = jest.spyOn(feature, 'is_enabled');
+                    featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
 
-                        const messageText = config.messageText(
-                            submission,
-                            slack_user,
-                            request_type
-                        );
-                        expect(messageText).toContain(value);
+                    const messageText = config.messageText(
+                        submission,
+                        slack_user,
+                        request_type
+                    );
+                    expect(messageText).toContain(value);
 
-                        featureSpy.mockRestore();
-                    });
+                    featureSpy.mockRestore();
+                });
             });
         });
 
