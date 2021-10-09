@@ -238,13 +238,6 @@ Submitted by: ${user.name}`;
             fields.issuetype.name = 'Data Request';
             fields.description = `${desc}\n\nSubmitted by: ${user.name}`;
             fields.components = [{ name: 'Back-end' }];
-
-            if (feature.is_enabled('data_request_transition')) {
-                result.transition = {
-                    'id': '131',
-                    'looped': true
-                };
-            }
         }
 
         return result;

@@ -139,23 +139,6 @@ Submitted by: ${slack_user.name}`;
                     const result = config.issueParams(submission, slack_user, request_type);
                     expect(result.fields.description).toContain('some reason');
                 });
-
-                describe('feature: data_request_transition', () => {
-                    it('includes transition attribute in issue params', () => {
-                        const featureSpy = jest.spyOn(feature, 'is_enabled');
-                        featureSpy.mockImplementation((key) => {
-                            return key === 'data_request_transition';
-                        });
-
-                        const result = config.issueParams(submission, slack_user, request_type);
-                        expect(result.transition).toEqual({
-                            id: '131',
-                            looped: true
-                        });
-
-                        featureSpy.mockRestore();
-                    });
-                });
             });
 
             describe('when long title', () => {
