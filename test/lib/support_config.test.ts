@@ -21,10 +21,10 @@ describe('supportConfig', () => {
             describe('bug', () => {
                 const request_type = 'bug';
                 const submission = {
-                    title: 'A',
-                    description: 'B',
-                    currently: 'C',
-                    expected: 'D'
+                    title: 'Test A',
+                    description: 'Test B',
+                    currently: 'Test C',
+                    expected: 'Test D'
                 };
                 const desc = `${submission.description}
 
@@ -42,7 +42,7 @@ Submitted by: ${slack_user.name}`;
                     ).toEqual({
                         fields: {
                             project: { key: 'SUP' },
-                            summary: 'A',
+                            summary: submission.title,
                             issuetype: { name: 'Bug' },
                             description: desc,
                             labels: ['support']
@@ -109,14 +109,14 @@ Submitted by: ${slack_user.name}`;
             describe('data', () => {
                 const request_type = 'data';
                 const submission = {
-                    title: 'A',
-                    description: 'B',
-                    reason: 'some reason'
+                    title: 'Test A',
+                    description: 'Test B',
+                    reason: 'Test C'
                 };
                 const desc = `${submission.description}
 
 Reason and urgency:
-some reason
+${submission.reason}
 
 Submitted by: ${slack_user.name}`;
 
@@ -126,18 +126,13 @@ Submitted by: ${slack_user.name}`;
                     ).toEqual({
                         fields: {
                             project: { key: 'SUP' },
-                            summary: 'A',
+                            summary: submission.title,
                             issuetype: { name: 'Data Request' },
                             description: desc,
                             components: [{ name: 'Back-end' }],
                             labels: ['support']
                         }
                     });
-                });
-
-                it('includes the reason in description', () => {
-                    const result = config.issueParams(submission, slack_user, request_type);
-                    expect(result.fields.description).toContain('some reason');
                 });
             });
 
@@ -146,7 +141,7 @@ Submitted by: ${slack_user.name}`;
                 const long_title = 'few random words repeated many times'.repeat(10);
                 const submission = {
                     title: long_title,
-                    description: 'B',
+                    description: 'Test B',
                     reason: ''
                 };
                 const first_part_of_title = long_title.slice(0, 128);
@@ -332,25 +327,25 @@ Submitted by: ${slack_user.name}`;
                             sl_title_block: {
                                 sl_title: {
                                     type: 'plain_text_input',
-                                    value: 'A'
+                                    value: 'Test A'
                                 },
                             },
                             ml_description_block: {
                                 ml_description: {
                                     type: 'plain_text_input',
-                                    value: 'B'
+                                    value: 'Test B'
                                 },
                             },
                             sl_currently_block: {
                                 sl_currently: {
                                     type: 'plain_text_input',
-                                    value: 'C'
+                                    value: 'Test C'
                                 },
                             },
                             sl_expected_block: {
                                 sl_expected: {
                                     type: 'plain_text_input',
-                                    value: 'D'
+                                    value: 'Test D'
                                 },
                             },
                         }
@@ -378,13 +373,13 @@ Submitted by: ${slack_user.name}`;
                                 sl_title_block: {
                                     sl_title: {
                                         type: 'plain_text_input',
-                                        value: 'A'
+                                        value: 'Test A'
                                     },
                                 },
                                 ml_description_block: {
                                     ml_description: {
                                         type: 'plain_text_input',
-                                        value: 'B'
+                                        value: 'Test B'
                                     },
                                 },
                                 ms_component_block: {
@@ -392,10 +387,10 @@ Submitted by: ${slack_user.name}`;
                                         type: 'multi_static_select',
                                         selected_options: [
                                             {
-                                                text: { text: 'C1' }
+                                                text: { text: 'Test C1' }
                                             },
                                             {
-                                                text: { text: 'C2' }
+                                                text: { text: 'Test C2' }
                                             },
                                         ]
                                     },
@@ -499,19 +494,19 @@ Submitted by: ${slack_user.name}`;
                             sl_title_block: {
                                 sl_title: {
                                     type: 'plain_text_input',
-                                    value: 'A'
+                                    value: 'Test A'
                                 },
                             },
                             ml_description_block: {
                                 ml_description: {
                                     type: 'plain_text_input',
-                                    value: 'B'
+                                    value: 'Test B'
                                 },
                             },
                             ml_reason_block: {
                                 ml_reason: {
                                     type: 'plain_text_input',
-                                    value: 'C'
+                                    value: 'Test C'
                                 },
                             },
                         }
@@ -524,9 +519,9 @@ Submitted by: ${slack_user.name}`;
                     );
 
                 it('contains all data request fields', () => {
-                    expect(submission.title).toEqual('A');
-                    expect(submission.description).toEqual('B');
-                    expect(submission.reason).toEqual('C');
+                    expect(submission.title).toEqual('Test A');
+                    expect(submission.description).toEqual('Test B');
+                    expect(submission.reason).toEqual('Test C');
                 });
             });
         });
