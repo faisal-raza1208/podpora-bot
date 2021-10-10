@@ -3,7 +3,10 @@ import {
     RequestType,
     SlackUser,
     Submission,
-    ViewSubmission
+    ViewSubmission,
+    ViewSubmissionInputValue,
+    ViewSubmissionMultiSelectValue,
+    ViewSubmissionSelectValue
 } from './slack/api_interfaces';
 import {
     normalisedTitleAndDesc,
@@ -28,6 +31,47 @@ function commandsHelpText(commands: Array<SlackCommand>): string {
 
 const configs: { [index: string]: Config } = {};
 
+function plain_text_input(
+    elm: ViewSubmissionInputValue
+): ViewSubmissionInputValue['value'] {
+    return elm.value;
+}
+
+function multi_static_select(
+    elm: ViewSubmissionMultiSelectValue
+): Array<string> {
+    return elm.selected_options.map((option) => {
+        return option.text.text;
+    });
+}
+
+function static_select(
+    elm: ViewSubmissionSelectValue
+): string | undefined {
+    if (elm.selected_option) {
+        return elm.selected_option.text.text;
+    }
+
+    return undefined;
+}
+
+function extractValue(
+    elm: ViewSubmissionInputValue | ViewSubmissionSelectValue | ViewSubmissionMultiSelectValue
+): string | Array<string> | null | undefined {
+    // TODO: Replace switch with polymorphism
+    switch (elm.type) {
+        case 'plain_text_input':
+            return plain_text_input(elm as ViewSubmissionInputValue);
+        case 'static_select':
+            return static_select(elm as ViewSubmissionSelectValue);
+        case 'multi_static_select':
+            return multi_static_select(elm as ViewSubmissionMultiSelectValue);
+        default:
+            throw new Error(`Unexpected element type: ${elm.type}`);
+    }
+}
+
+
 configs.default = {
     commands: [
         {
@@ -50,21 +94,15 @@ configs.default = {
     viewToSubmission: function(
         view: ViewSubmission['view'], request_type: RequestType
     ): Submission {
-        const values = view.state.values;
-        const submission: Submission = {};
-        submission.title = viewInputVal('sl_title', values);
-        submission.description = viewInputVal('ml_description', values);
+        return Object.values(view.state.values).reduce((acc, block) => {
+            Object.keys(block).forEach((key) => {
+                const field = key.replace(/^\w{2}_/, '');
 
-        if (request_type === 'bug') {
-            submission.currently = viewInputVal('sl_currently', values);
-            submission.expected = viewInputVal('sl_expected', values);
-        }
+                acc[field] = extractValue(block[key]);
+            });
 
-        if (request_type === 'data') {
-            submission.reason = viewInputVal('ml_reason', values);
-        }
-
-        return submission;
+            return acc;
+        }, {} as Submission);
     },
     issueParams: function(
         submission: Submission,
