@@ -1,3 +1,4 @@
+import { merge } from '../helpers';
 import supportConfig from '../../src/lib/support_config';
 import feature from '../../src/util/feature';
 import { ViewSubmission } from '../../src/lib/slack/api_interfaces';
@@ -20,7 +21,7 @@ describe('supportConfig', () => {
         describe('#issueParams(submission, slack_user, request_type)', () => {
             describe('bug', () => {
                 const request_type = 'bug';
-                const submission = {
+                let submission = {
                     title: 'Test A',
                     description: 'Test B',
                     currently: 'Test C',
@@ -51,57 +52,58 @@ Submitted by: ${slack_user.name}`;
                 });
 
                 describe('feature: new_bug_fields', () => {
-                    const request_type = 'bug';
-                    const submission = {
-                        title: 'A',
-                        description: 'B',
-                        currently: 'C',
-                        expected: 'D',
-                        component: 'E',
-                        version: 'F',
-                        employer: 'G',
-                        worker: 'H',
-                        listing: 'I',
-                        shift: 'J',
-                        test_data: 'K',
-                        region: 'L',
-                        device: 'M'
+                    const fields = {
+                        component: 'Test E',
+                        version: 'Test F',
+                        employer: 'Test G',
+                        worker: 'Test H',
+                        listing: 'Test I',
+                        shift: 'Test J',
+                        test_data: 'Test K',
+                        region: 'Test L',
+                        device: 'Test M'
                     };
 
-                    const fieldLabels = [
-                        'Component/Platform',
-                        'App version',
-                        'Employer ID',
-                        'Worker ID',
-                        'Listing ID',
-                        'Shift ID',
-                        'Test data',
-                        'Region/Country',
-                        'Device'
-                    ];
+                    const fieldLabels = {
+                        component: 'Component/Platform',
+                        version: 'App version',
+                        employer: 'Employer ID',
+                        worker: 'Worker ID',
+                        listing: 'Listing ID',
+                        shift: 'Shift ID',
+                        test_data: 'Test data',
+                        region: 'Region/Country',
+                        device: 'Device'
+                    };
 
-                    it.each(fieldLabels)('sends the "%s" label in the description', label => {
-                        const featureSpy = jest.spyOn(feature, 'is_enabled');
-                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+                    submission = merge(submission, fields);
 
-                        const { description } = config
-                            .issueParams(submission, slack_user, request_type).fields;
-                        expect(description).toContain(label);
+                    describe('.fields.description', () => {
+                        it('contains new bug fields labels', () => {
+                            const featureSpy = jest.spyOn(feature, 'is_enabled');
+                            featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
 
-                        featureSpy.mockRestore();
-                    });
+                            const { description } = config
+                                .issueParams(submission, slack_user, request_type).fields;
 
-                    const submissionValues = Object.values(submission);
+                            Object.values(fieldLabels)
+                                .forEach((label: string) => {
+                                    expect(description).toContain(label);
+                                });
+                        });
 
-                    it.each(submissionValues)('sends the "%s" value in the message', value => {
-                        const featureSpy = jest.spyOn(feature, 'is_enabled');
-                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+                        it('contains new bug fields values', () => {
+                            const featureSpy = jest.spyOn(feature, 'is_enabled');
+                            featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
 
-                        const { description } = config
-                            .issueParams(submission, slack_user, request_type).fields;
-                        expect(description).toContain(value);
+                            const { description } = config
+                                .issueParams(submission, slack_user, request_type).fields;
 
-                        featureSpy.mockRestore();
+                            Object.values(fields)
+                                .forEach((value: string) => {
+                                    expect(description).toContain(value);
+                                });
+                        });
                     });
                 });
             });
@@ -191,7 +193,7 @@ Submitted by: ${slack_user.name}`;
 
             describe('bug', () => {
                 const request_type = 'bug';
-                const submission = {
+                let submission = {
                     title: 'Test title',
                     description: 'Test description',
                     currently: 'Test currently',
@@ -205,70 +207,57 @@ Submitted by: ${slack_user.name}`;
                     expect(result).toContain('Test currently');
                     expect(result).toContain('Test expected');
                 });
-            });
 
-            describe('feature: new_bug_fields', () => {
-                const request_type = 'bug';
-                const submission = {
-                    title: 'Test A',
-                    description: 'Test B',
-                    currently: 'Test C',
-                    expected: 'Test D',
-                    component: 'Test E',
-                    version: 'Test F',
-                    employer: 'Test G',
-                    worker: 'Test H',
-                    listing: 'Test I',
-                    shift: 'Test J',
-                    test_data: 'Test K',
-                    region: 'Test L',
-                    device: 'Test M'
-                };
+                describe('feature: new_bug_fields', () => {
+                    const fields = {
+                        component: 'Test E',
+                        version: 'Test F',
+                        employer: 'Test G',
+                        worker: 'Test H',
+                        listing: 'Test I',
+                        shift: 'Test J',
+                        test_data: 'Test K',
+                        region: 'Test L',
+                        device: 'Test M'
+                    };
 
-                const fieldLabels = [
-                    'Component/Platform',
-                    'App version',
-                    'Employer ID',
-                    'Worker ID',
-                    'Listing ID',
-                    'Shift ID',
-                    'Test data',
-                    'Region/Country',
-                    'Device'
-                ];
+                    const fieldLabels = {
+                        component: 'Component/Platform',
+                        version: 'App version',
+                        employer: 'Employer ID',
+                        worker: 'Worker ID',
+                        listing: 'Listing ID',
+                        shift: 'Shift ID',
+                        test_data: 'Test data',
+                        region: 'Region/Country',
+                        device: 'Device'
+                    };
 
-                it.each(fieldLabels)('include the "%s" label in the message', (label) => {
-                    const featureSpy = jest.spyOn(feature, 'is_enabled');
-                    featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+                    submission = merge(submission, fields);
 
-                    const messageText = config.messageText(
-                        submission,
-                        slack_user,
-                        request_type
-                    );
-                    expect(messageText).toContain(label);
+                    it('contains new bug fields labels', () => {
+                        const featureSpy = jest.spyOn(feature, 'is_enabled');
+                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
 
-                    featureSpy.mockRestore();
-                });
+                        const result = config.messageText(submission, slack_user, request_type);
 
-                const submissionValues = Object.values(submission)
-                    .map((value, i) => {
-                        if (i === 0) return `*${value}*`;
-                        return value;
+                        Object.values(fieldLabels)
+                            .forEach((label: string) => {
+                                expect(result).toContain(label);
+                            });
                     });
 
-                it.each(submissionValues)('include the "%s" value in the message', (value) => {
-                    const featureSpy = jest.spyOn(feature, 'is_enabled');
-                    featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
+                    it('contains new bug fields values', () => {
+                        const featureSpy = jest.spyOn(feature, 'is_enabled');
+                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
 
-                    const messageText = config.messageText(
-                        submission,
-                        slack_user,
-                        request_type
-                    );
-                    expect(messageText).toContain(value);
+                        const result = config.messageText(submission, slack_user, request_type);
 
-                    featureSpy.mockRestore();
+                        Object.values(fields)
+                            .forEach((value: string) => {
+                                expect(result).toContain(value);
+                            });
+                    });
                 });
             });
         });
