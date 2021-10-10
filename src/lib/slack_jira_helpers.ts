@@ -80,6 +80,60 @@ function viewMultiSelectedVal(
     return elm.selected_options.map(({ text }) => text.text);
 }
 
+function plain_text_input(
+    elm: ViewSubmissionInputValue
+): ViewSubmissionInputValue['value'] {
+    return elm.value;
+}
+
+function multi_static_select(
+    elm: ViewSubmissionMultiSelectValue
+): Array<string> {
+    return elm.selected_options.map((option) => {
+        return option.text.text;
+    });
+}
+
+function static_select(
+    elm: ViewSubmissionSelectValue
+): string | undefined {
+    if (elm.selected_option) {
+        return elm.selected_option.text.text;
+    }
+
+    return undefined;
+}
+
+function extractValue(
+    elm: ViewSubmissionInputValue | ViewSubmissionSelectValue | ViewSubmissionMultiSelectValue
+): string | Array<string> | null | undefined {
+    // TODO: Replace switch with polymorphism
+    switch (elm.type) {
+        case 'plain_text_input':
+            return plain_text_input(elm as ViewSubmissionInputValue);
+        case 'static_select':
+            return static_select(elm as ViewSubmissionSelectValue);
+        case 'multi_static_select':
+            return multi_static_select(elm as ViewSubmissionMultiSelectValue);
+        default:
+            throw new Error(`Unexpected element type: ${elm.type}`);
+    }
+}
+
+function viewToSubmission(
+    view: ViewSubmission['view'], request_type: string
+): Submission {
+    return Object.values(view.state.values).reduce((acc, block) => {
+        Object.keys(block).forEach((key) => {
+            const field = key.replace(/^\w{2}_/, '');
+
+            acc[field] = extractValue(block[key]);
+        });
+
+        return acc;
+    }, {} as Submission);
+}
+
 function statusChangeMessage(
     changelog: IssueChangelog
 ): string | null {
@@ -129,5 +183,6 @@ export {
     viewInputVal,
     viewSelectedVal,
     viewMultiSelectedVal,
+    viewToSubmission,
     normalisedTitleAndDesc
 };
