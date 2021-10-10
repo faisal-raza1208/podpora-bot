@@ -121,7 +121,7 @@ function extractValue(
 }
 
 function viewToSubmission(
-    view: ViewSubmission['view'], request_type: string
+    view: ViewSubmission['view']
 ): Submission {
     return Object.values(view.state.values).reduce((acc, block) => {
         Object.keys(block).forEach((key) => {

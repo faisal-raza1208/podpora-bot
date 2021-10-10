@@ -165,7 +165,7 @@ describe('viewToSubmission(view, request_type)', () => {
 
     it('returns empty submission object', () => {
         const submission = viewToSubmission(
-            viewSubmissionView as ViewSubmission['view'], 'data'
+            viewSubmissionView as ViewSubmission['view']
         );
 
         expect(submission).toEqual({});
@@ -187,7 +187,7 @@ describe('viewToSubmission(view, request_type)', () => {
 
         it('returns submission with key and value from input', () => {
             const submission = viewToSubmission(
-                viewSubmissionView as ViewSubmission['view'], 'data'
+                viewSubmissionView as ViewSubmission['view']
             );
 
             expect(submission).toEqual({ single_value: 'Test A' });
@@ -212,7 +212,7 @@ describe('viewToSubmission(view, request_type)', () => {
 
         it('returns submission with key and value from select', () => {
             const submission = viewToSubmission(
-                viewSubmissionView as ViewSubmission['view'], 'data'
+                viewSubmissionView as ViewSubmission['view']
             );
 
             expect(submission).toEqual({ region: 'Test J' });
@@ -234,7 +234,7 @@ describe('viewToSubmission(view, request_type)', () => {
 
             it('returns submission with key and `undefined` as value from select', () => {
                 const submission = viewToSubmission(
-                    viewSubmissionView as ViewSubmission['view'], 'data'
+                    viewSubmissionView as ViewSubmission['view']
                 );
 
                 expect(submission).toEqual({ region: undefined });
@@ -265,7 +265,7 @@ describe('viewToSubmission(view, request_type)', () => {
 
         it('returns submission with key and list of values from select', () => {
             const submission = viewToSubmission(
-                viewSubmissionView as ViewSubmission['view'], 'data'
+                viewSubmissionView as ViewSubmission['view']
             );
 
             expect(submission).toEqual({ component: ['Test C1', 'Test C2'] });
@@ -287,7 +287,7 @@ describe('viewToSubmission(view, request_type)', () => {
 
             it('returns submission with key and empty array as value from select', () => {
                 const submission = viewToSubmission(
-                    viewSubmissionView as ViewSubmission['view'], 'data'
+                    viewSubmissionView as ViewSubmission['view']
                 );
 
                 expect(submission).toEqual({ component: [] });
@@ -312,7 +312,7 @@ describe('viewToSubmission(view, request_type)', () => {
         it('raise error', () => {
             expect(() => {
                 viewToSubmission(
-                    viewSubmissionView as ViewSubmission['view'], 'data'
+                    viewSubmissionView as ViewSubmission['view']
                 );
             }).toThrowError();
         });
