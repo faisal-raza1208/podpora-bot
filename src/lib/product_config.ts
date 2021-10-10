@@ -3,13 +3,11 @@ import { View } from '@slack/web-api';
 import {
     SlackUser,
     Submission,
-    ViewSubmission,
     RequestType
 } from './slack/api_interfaces';
 import {
     normalisedTitleAndDesc,
-    viewInputVal,
-    viewSelectedVal,
+    viewToSubmission,
     SlackCommand
 } from './slack_jira_helpers';
 import {
@@ -23,29 +21,6 @@ function commandsHelpText(commands: Array<SlackCommand>): string {
         (cmd) => {
             return `> ${cmd.desc}:\n>\`${cmd.example}\``;
         }).join('\n\n');
-}
-
-function viewToSubmission(
-    view: ViewSubmission['view'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    request_type: RequestType
-): Submission {
-    const values = view.state.values;
-    const submission: Submission = {};
-    submission.title = viewInputVal('sl_title', values);
-    submission.description = viewInputVal('ml_description', values);
-    submission.affected_users = viewInputVal('sl_affected_users', values);
-    const prod_area_value = viewSelectedVal('sl_product_area', values);
-    const urgency_value = viewSelectedVal('sl_urgency', values);
-
-    if (prod_area_value) {
-        submission.product_area = prod_area_value;
-    }
-    if (urgency_value) {
-        submission.urgency = urgency_value;
-    }
-
-    return submission;
 }
 
 const configs: { [index: string]: Config } = {};
