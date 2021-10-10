@@ -74,11 +74,11 @@ function viewSelectedVal(
 function viewMultiSelectedVal(
     id: string,
     values: ViewSubmission['view']['state']['values']
-): string | undefined {
+): Array<string> | undefined {
     const elm = values[id + '_block'][id] as ViewSubmissionMultiSelectValue;
 
     if (elm.selected_options.length) {
-        return elm.selected_options.map(({ text }) => text.text).join(', ');
+        return elm.selected_options.map(({ text }) => text.text);
     }
 
     return undefined;

@@ -143,7 +143,7 @@ describe('viewMultiSelectedVal(id, values)', () => {
         };
 
         it('should return a string', () => {
-            expect(viewMultiSelectedVal('ms_component', values)).toBe('A');
+            expect(viewMultiSelectedVal('ms_component', values)).toEqual(['A']);
         });
     });
 
@@ -167,8 +167,8 @@ describe('viewMultiSelectedVal(id, values)', () => {
             }
         };
 
-        it('should return a comma separated string of values', () => {
-            expect(viewMultiSelectedVal('ms_component', values)).toBe('A, B, C');
+        it('returns an array of values', () => {
+            expect(viewMultiSelectedVal('ms_component', values)).toEqual(['A', 'B', 'C']);
         });
     });
 });
