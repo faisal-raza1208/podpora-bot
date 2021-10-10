@@ -61,9 +61,9 @@ interface Shortcut extends Interaction {
 
 interface ViewSubmissionBlockValue {
     [index: string]:
-        | ViewSubmissionInputValue
-        | ViewSubmissionSelectValue
-        | ViewSubmissionMultiSelectValue
+    | ViewSubmissionInputValue
+    | ViewSubmissionSelectValue
+    | ViewSubmissionMultiSelectValue
 }
 
 interface ViewSubmissionInputValue {
@@ -184,7 +184,7 @@ function isSlackImageFile(
 interface SlackUser { id: string, name: string }
 
 interface Submission {
-    [index: string]: string | undefined;
+    [index: string]: string | Array<string> | undefined;
 }
 
 type SupportRequestType = 'bug' | 'data'

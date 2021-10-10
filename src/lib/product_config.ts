@@ -88,10 +88,10 @@ Submitted by: ${user.name}`;
         labels.push('product');
 
         if (submission.urgency) {
-            labels.push(slugify(submission.urgency));
+            labels.push(slugify(submission.urgency as string));
         }
         if (submission.product_area) {
-            labels.push(slugify(submission.product_area));
+            labels.push(slugify(submission.product_area as string));
         }
 
         return {
