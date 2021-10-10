@@ -55,31 +55,6 @@ function slackFileToText(file: SlackFiles): string {
     }
 }
 
-function viewInputVal(
-    id: string,
-    values: ViewSubmission['view']['state']['values']
-): string | undefined {
-    const input = values[id + '_block'][id] as ViewSubmissionInputValue;
-    return input.value || undefined;
-}
-
-function viewSelectedVal(
-    id: string,
-    values: ViewSubmission['view']['state']['values']
-): string | undefined {
-    const elm = values[id + '_block'][id] as ViewSubmissionSelectValue;
-    return elm.selected_option?.text.text;
-}
-
-function viewMultiSelectedVal(
-    id: string,
-    values: ViewSubmission['view']['state']['values']
-): Array<string> {
-    const elm = values[id + '_block'][id] as ViewSubmissionMultiSelectValue;
-
-    return elm.selected_options.map(({ text }) => text.text);
-}
-
 function plain_text_input(
     elm: ViewSubmissionInputValue
 ): ViewSubmissionInputValue['value'] {
@@ -180,9 +155,6 @@ export {
     SlackCommand,
     slackFileToText,
     statusChangeMessage,
-    viewInputVal,
-    viewSelectedVal,
-    viewMultiSelectedVal,
     viewToSubmission,
     normalisedTitleAndDesc
 };
