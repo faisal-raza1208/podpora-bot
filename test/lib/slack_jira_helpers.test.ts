@@ -113,7 +113,7 @@ describe('viewSelectedVal(id, values)', () => {
 });
 
 describe('viewMultiSelectedVal(id, values)', () => {
-    describe('no selection', () => {
+    describe('with no selection', () => {
         const values = {
             ms_component_block: {
                 ms_component: {
@@ -123,31 +123,12 @@ describe('viewMultiSelectedVal(id, values)', () => {
             }
         };
 
-        it('should return undefined', () => {
-            expect(viewMultiSelectedVal('ms_component', values)).toBeUndefined();
+        it('returns an empty array', () => {
+            expect(viewMultiSelectedVal('ms_component', values)).toEqual([]);
         });
     });
 
-    describe('one selection', () => {
-        const values = {
-            ms_component_block: {
-                ms_component: {
-                    type: 'multi_static_select',
-                    selected_options: [
-                        {
-                            text: { text: 'A' }
-                        }
-                    ]
-                }
-            }
-        };
-
-        it('should return a string', () => {
-            expect(viewMultiSelectedVal('ms_component', values)).toEqual(['A']);
-        });
-    });
-
-    describe('multiple selections', () => {
+    describe('with selections', () => {
         const values = {
             ms_component_block: {
                 ms_component: {
