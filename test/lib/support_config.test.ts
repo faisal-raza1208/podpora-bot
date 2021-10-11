@@ -61,7 +61,8 @@ Submitted by: ${slack_user.name}`;
                         shift: 'Test J',
                         test_data: 'Test K',
                         region: 'Test L',
-                        device: 'Test M'
+                        device: 'Test M',
+                        urgency: 'Test O'
                     };
 
                     const fieldLabels = {
@@ -73,7 +74,8 @@ Submitted by: ${slack_user.name}`;
                         shift: 'Shift ID',
                         test_data: 'Test data',
                         region: 'Region/Country',
-                        device: 'Device'
+                        device: 'Device',
+                        urgency: 'Urgent'
                     };
 
                     submission = merge(submission, fields);
@@ -218,7 +220,8 @@ Submitted by: ${slack_user.name}`;
                         shift: 'Test J',
                         test_data: 'Test K',
                         region: 'Test L',
-                        device: 'Test M'
+                        device: 'Test M',
+                        urgency: 'Test O'
                     };
 
                     const fieldLabels = {
@@ -230,7 +233,8 @@ Submitted by: ${slack_user.name}`;
                         shift: 'Shift ID',
                         test_data: 'Test data',
                         region: 'Region/Country',
-                        device: 'Device'
+                        device: 'Device',
+                        urgency: 'Urgent'
                     };
 
                     submission = merge(submission, fields);
@@ -284,6 +288,7 @@ Submitted by: ${slack_user.name}`;
                     'ml_description_block',
                     'sl_currently_block',
                     'sl_expected_block',
+                    'ss_urgency_block',
                     'ms_component_block',
                     'ss_region_block',
                     'sl_version_block',
@@ -446,6 +451,14 @@ Submitted by: ${slack_user.name}`;
                                     sl_expected: {
                                         type: 'plain_text_input',
                                         value: 'M'
+                                    },
+                                },
+                                ss_urgency_block: {
+                                    ss_urgency: {
+                                        type: 'static_select',
+                                        selected_option: {
+                                            text: { text: 'O' }
+                                        }
                                     },
                                 },
                             }

@@ -160,6 +160,7 @@ configs.syft = {
             submission.expected = viewInputVal('sl_expected', values);
 
             if (feature.is_enabled('new_bug_fields')) {
+                submission.urgency = viewSelectedVal('ss_urgency', values);
                 submission.component = viewMultiSelectedVal('ms_component', values);
                 submission.version = viewInputVal('sl_version', values);
                 submission.employer = viewInputVal('sl_employer', values);
@@ -210,6 +211,8 @@ ${submission.expected}`;
             if (feature.is_enabled('new_bug_fields')) {
                 fields.description = `${fields.description}
 
+Urgent: ${submission.urgency}
+
 Component/Platform: ${submission.component}
 
 Region/Country: ${submission.region}
@@ -249,7 +252,8 @@ Submitted by: ${user.name}`;
     ): string {
         if (request_type === 'bug') {
             const newBugFields = feature.is_enabled('new_bug_fields')
-                ? `*Component/Platform*: ${submission.component}\n\n` +
+                ? `*Urgent*: ${submission.urgency}\n\n` +
+                `*Component/Platform*: ${submission.component}\n\n` +
                 `*Region/Country*: ${submission.region}\n\n` +
                 `*App version*: ${submission.version}\n\n` +
                 `*Employer ID*: ${submission.employer}\n\n` +
