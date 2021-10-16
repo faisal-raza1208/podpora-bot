@@ -198,7 +198,7 @@ const support = {
     ): Response {
         const { user, view } = payload;
         const config = supportConfig(support.configName(slack));
-        const submission = config.viewToSubmission(view, request_type);
+        const submission = config.viewToSubmission(view);
 
         support.createSupportRequest(
             slack, jira, submission, user, request_type

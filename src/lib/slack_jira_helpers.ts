@@ -55,29 +55,58 @@ function slackFileToText(file: SlackFiles): string {
     }
 }
 
-function viewInputVal(
-    id: string,
-    values: ViewSubmission['view']['state']['values']
-): string | undefined {
-    const input = values[id + '_block'][id] as ViewSubmissionInputValue;
-    return input.value || undefined;
+function plain_text_input(
+    elm: ViewSubmissionInputValue
+): ViewSubmissionInputValue['value'] {
+    return elm.value;
 }
 
-function viewSelectedVal(
-    id: string,
-    values: ViewSubmission['view']['state']['values']
-): string | undefined {
-    const elm = values[id + '_block'][id] as ViewSubmissionSelectValue;
-    return elm.selected_option?.text.text;
-}
-
-function viewMultiSelectedVal(
-    id: string,
-    values: ViewSubmission['view']['state']['values']
+function multi_static_select(
+    elm: ViewSubmissionMultiSelectValue
 ): Array<string> {
-    const elm = values[id + '_block'][id] as ViewSubmissionMultiSelectValue;
+    return elm.selected_options.map((option) => {
+        return option.text.text;
+    });
+}
 
-    return elm.selected_options.map(({ text }) => text.text);
+function static_select(
+    elm: ViewSubmissionSelectValue
+): string | undefined {
+    if (elm.selected_option) {
+        return elm.selected_option.text.text;
+    }
+
+    return undefined;
+}
+
+function extractValue(
+    elm: ViewSubmissionInputValue | ViewSubmissionSelectValue | ViewSubmissionMultiSelectValue
+): string | Array<string> | null | undefined {
+    // TODO: Replace switch with polymorphism
+    switch (elm.type) {
+        case 'plain_text_input':
+            return plain_text_input(elm as ViewSubmissionInputValue);
+        case 'static_select':
+            return static_select(elm as ViewSubmissionSelectValue);
+        case 'multi_static_select':
+            return multi_static_select(elm as ViewSubmissionMultiSelectValue);
+        default:
+            throw new Error(`Unexpected element type: ${elm.type}`);
+    }
+}
+
+function viewToSubmission(
+    view: ViewSubmission['view']
+): Submission {
+    return Object.values(view.state.values).reduce((acc, block) => {
+        Object.keys(block).forEach((key) => {
+            const field = key.replace(/^\w{2}_/, '');
+
+            acc[field] = extractValue(block[key]);
+        });
+
+        return acc;
+    }, {} as Submission);
 }
 
 function statusChangeMessage(
@@ -126,8 +155,6 @@ export {
     SlackCommand,
     slackFileToText,
     statusChangeMessage,
-    viewInputVal,
-    viewSelectedVal,
-    viewMultiSelectedVal,
+    viewToSubmission,
     normalisedTitleAndDesc
 };

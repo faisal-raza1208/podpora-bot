@@ -177,7 +177,7 @@ const product = {
     ): Response {
         const { user, view } = payload;
         const config = productConfig(product.configName(slack));
-        const submission = config.viewToSubmission(view, request_type);
+        const submission = config.viewToSubmission(view);
 
         product.createProductRequest(
             slack, jira, submission, user, request_type

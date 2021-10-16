@@ -184,7 +184,7 @@ function isSlackImageFile(
 interface SlackUser { id: string, name: string }
 
 interface Submission {
-    [index: string]: string | Array<string> | undefined;
+    [index: string]: string | Array<string> | null | undefined;
 }
 
 type SupportRequestType = 'bug' | 'data'

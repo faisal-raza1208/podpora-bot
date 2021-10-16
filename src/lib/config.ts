@@ -17,8 +17,7 @@ interface Config {
     commandsHelpText: () => string,
     view: (key: string) => View,
     viewToSubmission: (
-        view: ViewSubmission['view'],
-        request_type: RequestType
+        view: ViewSubmission['view']
     ) => Submission,
     issueParams: (
         submission: Submission,
