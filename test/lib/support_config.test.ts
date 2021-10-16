@@ -1,6 +1,5 @@
-import { merge } from '../helpers';
 import supportConfig from '../../src/lib/support_config';
-import feature from '../../src/util/feature';
+// import feature from '../../src/util/feature';
 
 describe('supportConfig', () => {
     const slack_user = { id: 'foo-user-id', name: 'Joe Doe' };
@@ -21,11 +20,21 @@ describe('supportConfig', () => {
         describe('#issueParams(submission, slack_user, request_type)', () => {
             describe('bug', () => {
                 const request_type = 'bug';
-                let submission = {
+                const submission = {
                     title: 'Test A',
                     description: 'Test B',
                     currently: 'Test C',
-                    expected: 'Test D'
+                    expected: 'Test D',
+                    component: 'Test E',
+                    region: 'Test L',
+                    version: 'Test F',
+                    employer: 'Test G',
+                    worker: 'Test H',
+                    listing: 'Test I',
+                    shift: 'Test J',
+                    test_data: 'Test K',
+                    device: 'Test M',
+                    urgency: 'Test N'
                 };
                 const desc = `${submission.description}
 
@@ -34,6 +43,26 @@ ${submission.currently}
 
 Expected:
 ${submission.expected}
+
+Urgent: ${submission.urgency}
+
+Component/Platform: ${submission.component}
+
+Region/Country: ${submission.region}
+
+App version: ${submission.version}
+
+Employer ID: ${submission.employer}
+
+Worker ID: ${submission.worker}
+
+Listing ID: ${submission.listing}
+
+Shift ID: ${submission.shift}
+
+Test data: ${submission.test_data}
+
+Device: ${submission.device}
 
 Submitted by: ${slack_user.name}`;
 
@@ -48,64 +77,6 @@ Submitted by: ${slack_user.name}`;
                             description: desc,
                             labels: ['support']
                         }
-                    });
-                });
-
-                describe('feature: new_bug_fields', () => {
-                    const fields = {
-                        component: 'Test E',
-                        version: 'Test F',
-                        employer: 'Test G',
-                        worker: 'Test H',
-                        listing: 'Test I',
-                        shift: 'Test J',
-                        test_data: 'Test K',
-                        region: 'Test L',
-                        device: 'Test M',
-                        urgency: 'Test O'
-                    };
-
-                    const fieldLabels = {
-                        component: 'Component/Platform',
-                        version: 'App version',
-                        employer: 'Employer ID',
-                        worker: 'Worker ID',
-                        listing: 'Listing ID',
-                        shift: 'Shift ID',
-                        test_data: 'Test data',
-                        region: 'Region/Country',
-                        device: 'Device',
-                        urgency: 'Urgent'
-                    };
-
-                    submission = merge(submission, fields);
-
-                    describe('.fields.description', () => {
-                        it('contains new bug fields labels', () => {
-                            const featureSpy = jest.spyOn(feature, 'is_enabled');
-                            featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
-
-                            const { description } = config
-                                .issueParams(submission, slack_user, request_type).fields;
-
-                            Object.values(fieldLabels)
-                                .forEach((label: string) => {
-                                    expect(description).toContain(label);
-                                });
-                        });
-
-                        it('contains new bug fields values', () => {
-                            const featureSpy = jest.spyOn(feature, 'is_enabled');
-                            featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
-
-                            const { description } = config
-                                .issueParams(submission, slack_user, request_type).fields;
-
-                            Object.values(fields)
-                                .forEach((value: string) => {
-                                    expect(description).toContain(value);
-                                });
-                        });
                     });
                 });
             });
@@ -195,73 +166,30 @@ Submitted by: ${slack_user.name}`;
 
             describe('bug', () => {
                 const request_type = 'bug';
-                let submission = {
+                const submission = {
                     title: 'Test title',
                     description: 'Test description',
                     currently: 'Test currently',
-                    expected: 'Test expected'
+                    expected: 'Test expected',
+                    component: 'Component/Platform',
+                    version: 'App version',
+                    employer: 'Employer ID',
+                    worker: 'Worker ID',
+                    listing: 'Listing ID',
+                    shift: 'Shift ID',
+                    test_data: 'Test data',
+                    region: 'Region/Country',
+                    device: 'Device',
+                    urgency: 'Test O'
                 };
 
                 it('returns a string', () => {
                     const result = config.messageText(submission, slack_user, request_type);
-                    expect(result).toContain('*Test title*');
-                    expect(result).toContain('Test description');
-                    expect(result).toContain('Test currently');
-                    expect(result).toContain('Test expected');
-                });
 
-                describe('feature: new_bug_fields', () => {
-                    const fields = {
-                        component: 'Test E',
-                        version: 'Test F',
-                        employer: 'Test G',
-                        worker: 'Test H',
-                        listing: 'Test I',
-                        shift: 'Test J',
-                        test_data: 'Test K',
-                        region: 'Test L',
-                        device: 'Test M',
-                        urgency: 'Test O'
-                    };
-
-                    const fieldLabels = {
-                        component: 'Component/Platform',
-                        version: 'App version',
-                        employer: 'Employer ID',
-                        worker: 'Worker ID',
-                        listing: 'Listing ID',
-                        shift: 'Shift ID',
-                        test_data: 'Test data',
-                        region: 'Region/Country',
-                        device: 'Device',
-                        urgency: 'Urgent'
-                    };
-
-                    submission = merge(submission, fields);
-
-                    it('contains new bug fields labels', () => {
-                        const featureSpy = jest.spyOn(feature, 'is_enabled');
-                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
-
-                        const result = config.messageText(submission, slack_user, request_type);
-
-                        Object.values(fieldLabels)
-                            .forEach((label: string) => {
-                                expect(result).toContain(label);
-                            });
-                    });
-
-                    it('contains new bug fields values', () => {
-                        const featureSpy = jest.spyOn(feature, 'is_enabled');
-                        featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
-
-                        const result = config.messageText(submission, slack_user, request_type);
-
-                        Object.values(fields)
-                            .forEach((value: string) => {
-                                expect(result).toContain(value);
-                            });
-                    });
+                    Object.values(submission)
+                        .forEach((value: string) => {
+                            expect(result).toContain(value);
+                        });
                 });
             });
         });
@@ -273,12 +201,7 @@ Submitted by: ${slack_user.name}`;
                 expect(
                     new Set(Object.keys(result))
                 ).toEqual(new Set(['title', 'type', 'blocks', 'submit', 'private_metadata']));
-            });
 
-            describe('feature: new_bug_fields', () => {
-                const featureSpy = jest.spyOn(feature, 'is_enabled');
-                featureSpy.mockImplementationOnce(flag => flag === 'new_bug_fields');
-                const result = config.view('bug');
                 const blocks_ids = result.blocks.map((block) => { return block.block_id; });
 
                 expect(
@@ -297,7 +220,8 @@ Submitted by: ${slack_user.name}`;
                     'sl_listing_block',
                     'sl_shift_block',
                     'sl_test_data_block',
-                    'ss_device_block'
+                    'ss_device_block',
+                    'ss_urgency_block'
                 ]));
             });
         });

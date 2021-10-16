@@ -14,7 +14,7 @@ import {
 } from './jira/api_interfaces';
 import Config from './config';
 import views from './views';
-import feature from '../util/feature';
+// import feature from '../util/feature';
 
 function commandsHelpText(commands: Array<SlackCommand>): string {
     return '👋 Need help with support bot?\n\n' + commands.map(
@@ -120,11 +120,7 @@ configs.syft = {
         return commandsHelpText(this.commands);
     },
     view: function(key: string): View {
-        const view_name = (feature.is_enabled('new_bug_fields') && key === 'bug')
-            ? 'bug-new'
-            : key;
-
-        return views.support.syft[view_name];
+        return views.support.syft[key];
     },
     viewToSubmission: viewToSubmission,
     issueParams: function(
@@ -156,8 +152,8 @@ ${submission.currently}
 Expected:
 ${submission.expected}`;
 
-            if (feature.is_enabled('new_bug_fields')) {
-                fields.description = `${fields.description}
+
+            fields.description = `${fields.description}
 
 Urgent: ${submission.urgency}
 
@@ -178,7 +174,7 @@ Shift ID: ${submission.shift}
 Test data: ${submission.test_data}
 
 Device: ${submission.device}`;
-            }
+
 
             fields.description = `${fields.description}
 
@@ -199,8 +195,12 @@ Submitted by: ${user.name}`;
         request_type: RequestType
     ): string {
         if (request_type === 'bug') {
-            const newBugFields = feature.is_enabled('new_bug_fields')
-                ? `*Urgent*: ${submission.urgency}\n\n` +
+            return `<@${user.id}> has submitted a bug report:\n\n` +
+                `*${submission.title}*\n\n` +
+                `*Steps to Reproduce*\n\n${submission.description}\n\n` +
+                `*Currently*\n\n${submission.currently}\n\n` +
+                `*Expected*\n\n${submission.expected}\n\n` +
+                `*Urgent*: ${submission.urgency}\n\n` +
                 `*Component/Platform*: ${submission.component}\n\n` +
                 `*Region/Country*: ${submission.region}\n\n` +
                 `*App version*: ${submission.version}\n\n` +
@@ -209,15 +209,7 @@ Submitted by: ${user.name}`;
                 `*Listing ID*: ${submission.listing}\n\n` +
                 `*Shift ID*: ${submission.shift}\n\n` +
                 `*Test data*: ${submission.test_data}\n\n` +
-                `*Device*: ${submission.device}\n\n`
-                : '';
-
-            return `<@${user.id}> has submitted a bug report:\n\n` +
-                `*${submission.title}*\n\n` +
-                `*Steps to Reproduce*\n\n${submission.description}\n\n` +
-                `*Currently*\n\n${submission.currently}\n\n` +
-                `*Expected*\n\n${submission.expected}\n\n` +
-                newBugFields;
+                `*Device*: ${submission.device}\n\n`;
         } else {
             return `<@${user.id}> has submitted a data request:\n\n` +
                 `*${submission.title}*\n\n${submission.description}\n` +
