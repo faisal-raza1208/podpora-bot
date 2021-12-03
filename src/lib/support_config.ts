@@ -181,7 +181,7 @@ Device: ${submission.device}`;
 Submitted by: ${user.name}`;
 
         } else {
-            desc = `${desc}\n\nReason and urgency:\n${submission.reason}`;
+            desc = `${desc}\n\nReason:\n${submission.reason}\n\nUrgent: ${submission.urgency}`;
             fields.issuetype.name = 'Data Request';
             fields.description = `${desc}\n\nSubmitted by: ${user.name}`;
             fields.components = [{ name: 'Back-end' }];
@@ -213,7 +213,8 @@ Submitted by: ${user.name}`;
         } else {
             return `<@${user.id}> has submitted a data request:\n\n` +
                 `*${submission.title}*\n\n${submission.description}\n` +
-                `Reason and urgency:\n${submission.reason}`;
+                `Reason:\n${submission.reason}\n` +
+                `Urgent: ${submission.urgency}`;
         }
     }
 };

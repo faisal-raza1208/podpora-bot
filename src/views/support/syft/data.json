@@ -65,6 +65,38 @@
         "type": "plain_text",
         "text": "Reason for request"
       }
+    },
+    {
+      "type": "input",
+      "block_id": "ss_urgency_block",
+      "element": {
+        "action_id": "ss_urgency",
+        "type": "static_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Please select"
+        },
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Yes"
+            },
+            "value": "yes"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "No"
+            },
+            "value": "no"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Urgent"
+      }
     }
   ],
   "type": "modal"

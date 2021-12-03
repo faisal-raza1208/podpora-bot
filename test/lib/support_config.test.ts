@@ -86,12 +86,15 @@ Submitted by: ${slack_user.name}`;
                 const submission = {
                     title: 'Test A',
                     description: 'Test B',
-                    reason: 'Test C'
+                    reason: 'Test C',
+                    urgency: 'Test D'
                 };
                 const desc = `${submission.description}
 
-Reason and urgency:
+Reason:
 ${submission.reason}
+
+Urgent: ${submission.urgency}
 
 Submitted by: ${slack_user.name}`;
 
@@ -117,7 +120,8 @@ Submitted by: ${slack_user.name}`;
                 const submission = {
                     title: long_title,
                     description: 'Test B',
-                    reason: ''
+                    reason: '',
+                    urgency: 'Test D'
                 };
                 const first_part_of_title = long_title.slice(0, 128);
                 const second_part_of_title = long_title.slice(128, -1);
@@ -125,8 +129,10 @@ Submitted by: ${slack_user.name}`;
 
 ${submission.description}
 
-Reason and urgency:
+Reason:
 
+
+Urgent: ${submission.urgency}
 
 Submitted by: ${slack_user.name}`;
                 it('slice the title to acceptable length and prepend to description', () => {
@@ -153,7 +159,8 @@ Submitted by: ${slack_user.name}`;
                 const submission = {
                     title: 'Test title',
                     description: 'Test description',
-                    reason: 'Test reason'
+                    reason: 'Test reason',
+                    urgency: 'Test urgency'
                 };
 
                 it('returns a string', () => {
@@ -161,6 +168,7 @@ Submitted by: ${slack_user.name}`;
                     expect(result).toContain('*Test title*');
                     expect(result).toContain('Test description');
                     expect(result).toContain('Test reason');
+                    expect(result).toContain('Test urgency');
                 });
             });
 
