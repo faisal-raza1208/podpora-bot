@@ -80,22 +80,29 @@
           {
             "text": {
               "type": "plain_text",
-              "text": "Yes"
+              "text": "1 - 2 days"
             },
-            "value": "yes"
+            "value": "onetotwo"
           },
           {
             "text": {
               "type": "plain_text",
-              "text": "No"
+              "text": "3 - 5 days"
             },
-            "value": "no"
+            "value": "threetofive"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Any specific date"
+            },
+            "value": "any"
           }
         ]
       },
       "label": {
         "type": "plain_text",
-        "text": "Urgent"
+        "text": "Urgency"
       }
     }
   ],
