@@ -33,7 +33,7 @@
     "@slack/web-api": "^6.5.1",
     "@types/response-time": "^2.3.5",
     "async": "^3.2.2",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.19.1",
     "dotenv": "^10.0.0",
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
