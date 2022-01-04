@@ -187,24 +187,24 @@ Submitted by: ${user.name}`;
         if (request_type === 'bug') {
             return `<@${user.id}> has submitted a bug report:\n\n` +
                 `*${submission.title}*\n\n` +
-                `*Steps to Reproduce*\n\n${submission.description}\n\n` +
-                `*Currently*\n\n${submission.currently}\n\n` +
-                `*Expected*\n\n${submission.expected}\n\n` +
-                `*Urgent*: ${submission.urgency}\n\n` +
-                `*Component/Platform*: ${submission.component}\n\n` +
-                `*Region/Country*: ${submission.region}\n\n` +
-                `*App version*: ${submission.version}\n\n` +
-                `*Employer ID*: ${submission.employer}\n\n` +
-                `*Worker ID*: ${submission.worker}\n\n` +
-                `*Listing ID*: ${submission.listing}\n\n` +
-                `*Shift ID*: ${submission.shift}\n\n` +
-                `*Test data*: ${submission.test_data}\n\n` +
-                `*Device*: ${submission.device}\n\n`;
+                `*Steps to Reproduce*:\n${submission.description}\n\n` +
+                `*Currently*:\n${submission.currently}\n\n` +
+                `*Expected*:\n${submission.expected}\n\n` +
+                `*Urgent*: ${submission.urgency}\n` +
+                `*Component/Platform*: ${submission.component}\n` +
+                `*Region/Country*: ${submission.region}\n` +
+                `*App version*: ${submission.version}\n` +
+                `*Employer ID*: ${submission.employer}\n` +
+                `*Worker ID*: ${submission.worker}\n` +
+                `*Listing ID*: ${submission.listing}\n` +
+                `*Shift ID*: ${submission.shift}\n` +
+                `*Test data*: ${submission.test_data}\n` +
+                `*Device*: ${submission.device}`;
         } else {
             return `<@${user.id}> has submitted a data request:\n\n` +
-                `*${submission.title}*\n\n${submission.description}\n` +
-                `Reason:\n${submission.reason}\n` +
-                `Urgency: ${submission.urgency}`;
+                `*${submission.title}*\n\n${submission.description}\n\n` +
+                `*Reason*:\n${submission.reason}\n` +
+                `*Urgency*: ${submission.urgency}`;
         }
     }
 };
