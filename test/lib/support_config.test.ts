@@ -45,23 +45,14 @@ Expected:
 ${submission.expected}
 
 Urgent: ${submission.urgency}
-
 Component/Platform: ${submission.component}
-
 Region/Country: ${submission.region}
-
 App version: ${submission.version}
-
 Employer ID: ${submission.employer}
-
 Worker ID: ${submission.worker}
-
 Listing ID: ${submission.listing}
-
 Shift ID: ${submission.shift}
-
 Test data: ${submission.test_data}
-
 Device: ${submission.device}
 
 Submitted by: ${slack_user.name}`;
