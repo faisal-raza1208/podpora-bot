@@ -143,17 +143,13 @@ configs.syft = {
 
         if (request_type === 'bug') {
             fields.issuetype.name = 'Bug';
-
             fields.description = `${desc}
 
 Currently:
 ${submission.currently}
 
 Expected:
-${submission.expected}`;
-
-
-            fields.description = `${fields.description}
+${submission.expected}
 
 Urgent: ${submission.urgency}
 
@@ -173,10 +169,7 @@ Shift ID: ${submission.shift}
 
 Test data: ${submission.test_data}
 
-Device: ${submission.device}`;
-
-
-            fields.description = `${fields.description}
+Device: ${submission.device}
 
 Submitted by: ${user.name}`;
 
