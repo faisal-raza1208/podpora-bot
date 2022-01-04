@@ -131,7 +131,7 @@ configs.syft = {
         const title_and_desc = normalisedTitleAndDesc(submission);
         const title = title_and_desc.title;
         const board = 'SUP';
-        let desc = title_and_desc.desc;
+        const desc = title_and_desc.desc;
         const fields: CreateIssue['fields'] = {
             project: { key: board },
             summary: title,
@@ -174,9 +174,15 @@ Device: ${submission.device}
 Submitted by: ${user.name}`;
 
         } else {
-            desc = `${desc}\n\nReason:\n${submission.reason}\n\nUrgency: ${submission.urgency}`;
             fields.issuetype.name = 'Data Request';
-            fields.description = `${desc}\n\nSubmitted by: ${user.name}`;
+            fields.description = `${desc}
+
+Reason:
+${submission.reason}
+
+Urgency: ${submission.urgency}
+
+Submitted by: ${user.name}`;
             fields.components = [{ name: 'Back-end' }];
         }
 
