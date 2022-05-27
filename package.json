@@ -44,7 +44,7 @@
     "winston": "^3.7.2"
   },
   "devDependencies": {
-    "@slack/types": "^2.4.0",
+    "@slack/types": "^2.5.0",
     "@types/async": "^3.2.13",
     "@types/response-time": "^2.3.5",
     "@types/chai": "^4.3.1",
