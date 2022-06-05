@@ -76,33 +76,33 @@
           "type": "plain_text",
           "text": "Please select"
         },
+        "initial_option": {
+          "text": {
+            "type": "plain_text",
+            "text": "No"
+          },
+          "value": "no"
+        },
         "options": [
           {
             "text": {
               "type": "plain_text",
-              "text": "1 - 2 days"
+              "text": "Yes"
             },
-            "value": "onetotwo"
+            "value": "yes"
           },
           {
             "text": {
               "type": "plain_text",
-              "text": "3 - 5 days"
+              "text": "No"
             },
-            "value": "threetofive"
-          },
-          {
-            "text": {
-              "type": "plain_text",
-              "text": "Any specific date"
-            },
-            "value": "any"
+            "value": "no"
           }
         ]
       },
       "label": {
         "type": "plain_text",
-        "text": "Urgency"
+        "text": "Urgent?"
       }
     }
   ],

@@ -85,7 +85,7 @@ Submitted by: ${slack_user.name}`;
 Reason:
 ${submission.reason}
 
-Urgency: ${submission.urgency}
+Urgent: ${submission.urgency}
 
 Submitted by: ${slack_user.name}`;
 
@@ -123,7 +123,7 @@ ${submission.description}
 Reason:
 
 
-Urgency: ${submission.urgency}
+Urgent: ${submission.urgency}
 
 Submitted by: ${slack_user.name}`;
                 it('slice the title to acceptable length and prepend to description', () => {

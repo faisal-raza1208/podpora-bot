@@ -171,7 +171,7 @@ Submitted by: ${user.name}`;
 Reason:
 ${submission.reason}
 
-Urgency: ${submission.urgency}
+Urgent: ${submission.urgency}
 
 Submitted by: ${user.name}`;
             fields.components = [{ name: 'Back-end' }];
@@ -204,7 +204,7 @@ Submitted by: ${user.name}`;
             return `<@${user.id}> has submitted a data request:\n\n` +
                 `*${submission.title}*\n\n${submission.description}\n\n` +
                 `*Reason*:\n${submission.reason}\n` +
-                `*Urgency*: ${submission.urgency}`;
+                `*Urgent*: ${submission.urgency}`;
         }
     }
 };
