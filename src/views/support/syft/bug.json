@@ -111,14 +111,14 @@
             },
             "value": "no"
           }
-        ]
-      },
-      "initial_option": {
+        ],
+        "initial_option": {
           "text": {
             "type": "plain_text",
             "text": "No"
           },
           "value": "no"
+        }
       },
       "label": {
         "type": "plain_text",
