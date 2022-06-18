@@ -22,7 +22,8 @@ class Jira {
                     apiToken: config.api_token
                 }
             },
-            telemetry: false
+            telemetry: false,
+            newErrorHandling: true
         };
 
         this.host = config.host;
