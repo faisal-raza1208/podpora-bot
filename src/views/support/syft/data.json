@@ -68,6 +68,39 @@
     },
     {
       "type": "input",
+      "block_id": "ss_region_block",
+      "element": {
+        "action_id": "ss_region",
+        "type": "static_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Please select"
+        },
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "UK"
+            },
+            "value": "uk"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "US"
+            },
+            "value": "us"
+          }
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Region/Country"
+      }
+    },
+
+    {
+      "type": "input",
       "block_id": "ss_urgency_block",
       "element": {
         "action_id": "ss_urgency",

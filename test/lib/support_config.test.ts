@@ -78,7 +78,8 @@ Submitted by: ${slack_user.name}`;
                     title: 'Test A',
                     description: 'Test B',
                     reason: 'Test C',
-                    urgency: 'Test D'
+                    urgency: 'Test D',
+                    region: 'Test L'
                 };
                 const desc = `${submission.description}
 
@@ -86,6 +87,7 @@ Reason:
 ${submission.reason}
 
 Urgency: ${submission.urgency}
+Region/Country: ${submission.region}
 
 Submitted by: ${slack_user.name}`;
 
@@ -112,7 +114,8 @@ Submitted by: ${slack_user.name}`;
                     title: long_title,
                     description: 'Test B',
                     reason: '',
-                    urgency: 'Test D'
+                    urgency: 'Test D',
+                    region: 'UK'
                 };
                 const first_part_of_title = long_title.slice(0, 128);
                 const second_part_of_title = long_title.slice(128, -1);
@@ -124,6 +127,7 @@ Reason:
 
 
 Urgency: ${submission.urgency}
+Region/Country: ${submission.region}
 
 Submitted by: ${slack_user.name}`;
                 it('slice the title to acceptable length and prepend to description', () => {
