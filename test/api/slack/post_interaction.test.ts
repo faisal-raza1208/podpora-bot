@@ -39,7 +39,7 @@ describe('POST /api/slack/interaction', () => {
         it('returns 200 OK', (done) => {
             storeSetSpy.mockImplementationOnce(() => {
                 done();
-                return true;
+                return Promise.resolve('OK');
             });
 
             nock('https://slack.com')
@@ -67,7 +67,7 @@ describe('POST /api/slack/interaction', () => {
             it('returns empty', (done) => {
                 storeSetSpy.mockImplementationOnce(() => {
                     done();
-                    return true;
+                    return Promise.resolve('OK');
                 });
 
                 nock('https://slack.com')

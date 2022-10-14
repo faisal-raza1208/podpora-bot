@@ -39,7 +39,7 @@
     "express-basic-auth": "^1.2.1",
     "jira.js": "^2.15.11",
     "prom-client": "^14.1.0",
-    "redis": "^3.1.2",
+    "redis": "^4.3.1",
     "response-time": "^2.3.2",
     "winston": "^3.8.2"
   },
@@ -55,7 +55,6 @@
     "@types/express-serve-static-core": "^4.17.31",
     "@types/jest": "^29.2.0",
     "@types/node": "^18.11.3",
-    "@types/redis": "^2.8.32",
     "@types/request-promise": "^4.1.48",
     "@types/shelljs": "^0.8.11",
     "@types/supertest": "^2.0.12",

@@ -1,7 +1,7 @@
 import logger from './logger';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import redis, { RedisClient } from 'redis';
+import { createClient } from 'redis';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV.toLowerCase() === 'test') {
     dotenv.config({ path: '.env.example' });
@@ -55,28 +55,25 @@ const FEATURE_FLAGS: { [index: string]: boolean }
     = (process.env['FEATURE_FLAGS'] &&
         JSON.parse(process.env['FEATURE_FLAGS'] as string)) || {};
 
-let client: RedisClient;
+const REDIS_URL = process.env.REDIS_URL as string;
+const redis_client = createClient({ url: REDIS_URL });
+let redis_connected = false;
 
-function redis_client(): RedisClient {
-    if (typeof client === 'undefined') {
-        if (!!store.featureFlag('redis_auth_without_user')) {
-            const url = new URL(REDIS_URL);
-            client = redis.createClient({
-                host: url.hostname,
-                port: Number(url.port),
-                password: url.password
-            });
-        } else {
-            client = redis.createClient(REDIS_URL);
-        }
+redis_client.on('error', function(error: Error) {
+    logger.info('Redis Client Error', error);
+});
 
-        client.on('error', function(error: Error) {
-            logger.error(error);
-        });
-    }
+redis_client.on('end', () => {
+    logger.info('Redis Client Disconnected');
+    redis_connected = false;
+});
 
-    return client;
-}
+redis_client.on('connect', () => {
+    logger.info('Redis Client Connected');
+    redis_connected = true;
+});
+
+redis_client.on('reconnecting', () => logger.info('Redis Client Reconnecting'));
 
 const store = {
     slackOptions: (id: string): SlackOptions => {
@@ -95,19 +92,23 @@ const store = {
         return FEATURE_FLAGS[name];
     },
 
-    set: (...args: string[]): boolean => {
-        return redis_client().mset(args);
+    set: (...args: string[]): Promise<string> => {
+        if (redis_connected) {
+            return redis_client.MSET(args);
+        }
+
+        return redis_client.connect().then(() => {
+            return redis_client.MSET(args);
+        });
     },
 
     get: (key: string): Promise<string | null> => {
-        return new Promise((resolve, reject) => {
-            redis_client().get(key, (error, response) => {
-                if (error) {
-                    return reject(error);
-                }
+        if (redis_connected) {
+            return redis_client.get(key);
+        }
 
-                return resolve(response);
-            });
+        return redis_client.connect().then(() => {
+            return redis_client.get(key);
         });
     }
 };
@@ -119,7 +120,6 @@ if (!SESSION_SECRET) {
     process.exit(1);
 }
 
-const REDIS_URL = process.env.REDIS_URL as string;
 const metrics_basic_auth = process.env['METRICS_BASIC_AUTH'] as string;
 
 if (!metrics_basic_auth) {
