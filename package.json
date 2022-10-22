@@ -26,6 +26,9 @@
     "serve-debug": "nodemon --inspect dist/server.js",
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
   },
+  "engines": {
+    "node": "14.x"
+  },
   "dependencies": {
     "@sindresorhus/slugify": "^1.1.2",
     "@slack/events-api": "^3.0.1",
