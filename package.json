@@ -62,7 +62,7 @@
     "@types/shelljs": "^0.8.11",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.47.1",
-    "@typescript-eslint/parser": "^5.47.1",
+    "@typescript-eslint/parser": "^5.48.0",
     "chai": "^4.3.7",
     "concurrently": "^7.6.0",
     "eslint": "^8.31.0",
