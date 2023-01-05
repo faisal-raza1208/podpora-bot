@@ -13,12 +13,17 @@ import {
     isUrlVerification,
     PostEventPayloads
 } from '../../../lib/slack/api_interfaces';
+import feature from '../../../util/feature';
 
 function handleCallbackEvent(payload: EventCallbackPayload): void {
     const { event, team_id } = payload;
     const slack_options = store.slackOptions(team_id);
     const slack = new Slack(slack_options);
     const channel_id = event.channel;
+
+    if (feature.is_enabled('log_post_events')) {
+        logger.info('postEvent: ', event);
+    }
 
     // TODO: maybe some more specific dispatch based on rules
     if (isChannelThreadFileShareEvent(event)) {

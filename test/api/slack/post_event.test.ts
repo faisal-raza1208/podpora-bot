@@ -8,6 +8,7 @@ import {
     PostEventPayloads
 } from '../../../src/lib/slack/api_interfaces';
 import app from '../../../src/app';
+import feature from '../../../src/util/feature';
 
 const logErrorSpy = jest.spyOn(logger, 'error').mockReturnValue({} as Logger);
 const storeGetSpy = jest.spyOn(store, 'get');
@@ -167,6 +168,26 @@ describe('POST /api/slack/event', () => {
 
                 it('will be ignored', () => {
                     return service(params).expect(200);
+                });
+            });
+
+            describe('log_post_events', () => {
+                const params = merge<EventCallbackPayload>(
+                    default_params, {
+                        'event': merge<EventCallbackPayload['event']>(
+                            default_params['event'], { channel: 'unknownchannel' }
+                        )
+                    });
+
+                it('logs the received event', () => {
+                    const featureSpy = jest.spyOn(feature, 'is_enabled');
+                    const logInfoSpy = jest.spyOn(logger, 'info')
+                        .mockReturnValue({} as Logger);
+                    featureSpy.mockImplementationOnce((_) => true);
+
+                    return service(params).expect(200).then((err) => {
+                        expect(logInfoSpy).toHaveBeenCalled();
+                    });
                 });
             });
         });
