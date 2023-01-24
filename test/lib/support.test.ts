@@ -140,7 +140,6 @@ describe('#addFileToJiraIssue(slack, jira, event)', () => {
         });
     });
 
-
     describe('when issue key not found db', () => {
         it('logs the error', (done) => {
             expect.assertions(2);

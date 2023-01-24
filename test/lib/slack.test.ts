@@ -7,7 +7,6 @@ import {
     Slack
 } from '../../src/lib/slack';
 import supportConfig from '../../src/lib/support_config';
-const loggerSpy = jest.spyOn(logger, 'error').mockReturnValue({} as Logger);
 
 afterEach(() => {
     jest.clearAllMocks();
@@ -20,9 +19,11 @@ describe('Slack', () => {
         domain: 'qwerty'
     };
     const slack = new Slack(config);
+    const loggerSpy = jest.spyOn(logger, 'error').mockReturnValue({} as Logger);
     const postMsgResponse = fixture('slack/chat.postMessage.response');
     const slack_message = postMsgResponse as SlackMessage;
     const messageText = supportConfig('default').messageText;
+
     describe('#postMessage(message_text, channel_id)', () => {
         const submission = {
             title: 'title of reported bug',
@@ -97,6 +98,7 @@ describe('Slack', () => {
 
     describe('#userName(id)', () => {
         const getUserInfo = fixture('slack/users.info.response');
+
         it('returns a Promise that resolves to as string', (done) => {
             expect.assertions(1);
             nock('https://slack.com')
