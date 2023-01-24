@@ -15,6 +15,8 @@ import {
     ViewSubmission,
     Shortcut,
     ChannelThreadFileShareEvent,
+    isSlackFileAccess,
+    SlackFile,
     SlackUser,
     Submission,
     RequestType
@@ -133,6 +135,14 @@ const support = {
         support.issueKey(slack.id, event.channel, event.thread_ts)
             .then((issue_key: string) => {
                 const user_name = slack.userName(event.user);
+                const files_promise = Promise.all(event.files.map((file) => {
+                    if (isSlackFileAccess(file)) {
+                        return slack.fileInfo(file.id);
+                    } else {
+                        return Promise.resolve(file);
+                    }
+                }));
+
                 const addComment = (name: string): void => {
                     const comment = fileShareEventToIssueComment(
                         event,
@@ -141,10 +151,20 @@ const support = {
                     );
                     jira.addComment(issue_key, comment);
                 };
-                user_name.then(addComment)
-                    .catch(() => {
-                        addComment(event.user);
-                    });
+
+                files_promise.then((vals) => {
+                    const files = vals.filter((f) => {
+                        return f && typeof f == 'object';
+                    }) as SlackFile[];
+
+                    event.files = files;
+
+                    user_name.then(addComment)
+                        .catch(() => {
+                            addComment(event.user);
+                        });
+                });
+
             }).catch((error) => {
                 logger.error(`addFileToJiraIssue: ${error}`);
             });

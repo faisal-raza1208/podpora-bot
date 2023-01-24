@@ -1,0 +1,35 @@
+{
+  "token": "dummy token",
+  "team_id": "T0001",
+  "api_app_id": "A014LS9K1U7",
+  "event": {
+    "type": "message",
+    "text": "",
+    "files": [
+      {
+        "id": "F12345678",
+        "mode": "file_access",
+        "file_access": "check_file_info",
+        "created": 0,
+        "timestamp": 0,
+        "user": ""
+      }
+    ],
+    "upload": false,
+    "user": "UHAV00MD0",
+    "display_as_bot": false,
+    "ts": "1593117566.000400",
+    "thread_ts": "1593117373.000100",
+    "parent_user_id": "U01548S52NN",
+    "channel": "CHS7JQ7PY",
+    "subtype": "file_share",
+    "event_ts": "1593117566.000400",
+    "channel_type": "channel"
+  },
+  "type": "event_callback",
+  "event_id": "Ev015W0PRC78",
+  "event_time": 1593117566,
+  "authed_users": [
+    "UHAV00MD0"
+  ]
+}

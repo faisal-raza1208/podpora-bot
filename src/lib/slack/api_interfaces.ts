@@ -173,12 +173,27 @@ interface SlackImageFile extends SlackFile {
     thumb_360: string
 }
 
-type SlackFiles = SlackImageFile | SlackFile;
+interface SlackFileAccess {
+    id: string
+    mode: string
+    file_access: string
+    created: number
+    timestamp: number
+    user: string
+}
+
+type SlackFiles = SlackFile | SlackImageFile | SlackFileAccess;
 
 function isSlackImageFile(
     file: SlackFiles
 ): file is SlackImageFile {
     return (<SlackImageFile>file).thumb_360 !== undefined;
+}
+
+function isSlackFileAccess(
+    file: SlackFiles
+): file is SlackFileAccess {
+    return (<SlackFileAccess>file).file_access !== undefined;
 }
 
 interface SlackUser { id: string, name: string }
@@ -203,6 +218,8 @@ export {
     isChannelThreadEvent,
     isChannelThreadFileShareEvent,
     isSlackImageFile,
+    isSlackFileAccess,
+    SlackFile,
     SlackFiles,
     SlackUser,
     Submission,

@@ -24,6 +24,10 @@ afterEach(() => {
 describe('POST /api/slack/event', () => {
     const api_path = '/api/slack/event';
     const service = build_service<PostEventPayloads>(app, api_path);
+    const event_payload =
+        fixture('slack/events.message_with_file') as EventCallbackPayload;
+    const user_info = fixture('slack/users.info.response');
+    const file_info = fixture('slack/files.info');
 
     describe('type: url_verification', () => {
         const params = {
@@ -41,31 +45,8 @@ describe('POST /api/slack/event', () => {
         });
     });
 
-    describe('type: event_callback', () => {
-        const dummy_event = {
-            ts: 'not important',
-            type: 'dummy',
-            channel: 'dummy',
-            thread_ts: 'foo-thread-ts'
-        };
-        const default_params = {
-            type: 'event_callback',
-            token: 'dummy token',
-            subtype: 'not a file share',
-            team_id: 'T001',
-            event: dummy_event
-        } as EventCallbackPayload;
-
-        describe('subtype: not a file_share event', () => {
-            it('will be ignored', () => {
-                return service(default_params).expect(200);
-            });
-        });
-
+    describe('type: file_share event_callback in normal channel', () => {
         function test_file_share_on_supported_channel(params: EventCallbackPayload): void {
-            const createIssueResponse = fixture('jira/issues.createIssue.response');
-            const issue_key = createIssueResponse.key as string;
-
             describe('when redis throws an error', () => {
                 it('logs the error', (done) => {
                     const key_error: Error = new Error('Some redis error');
@@ -88,7 +69,7 @@ describe('POST /api/slack/event', () => {
 
             it('add message as comment to Jira Issue', (done) => {
                 expect.assertions(2);
-                const getUserInfo = fixture('slack/users.info.response');
+                const issue_key = 'some-issue-key';
                 const checkJiraComment = (body: string): void => {
                     expect(body).toContain('files.slack');
                     expect(body).toContain('Egon Spengler');
@@ -105,7 +86,7 @@ describe('POST /api/slack/event', () => {
 
                 nock('https://slack.com')
                     .post('/api/users.info')
-                    .reply(200, getUserInfo);
+                    .reply(200, user_info);
 
                 storeGetSpy.mockImplementationOnce(() => {
                     return Promise.resolve(issue_key);
@@ -122,8 +103,8 @@ describe('POST /api/slack/event', () => {
                 const not_in_thread_params = merge<EventCallbackPayload>(params, {
                     'event': merge<EventCallbackPayload['event']>(
                         params['event'], {
-                            thread_ts: undefined
-                        })
+                        thread_ts: undefined
+                    })
                 });
 
                 it('will be ignored', () => {
@@ -132,69 +113,44 @@ describe('POST /api/slack/event', () => {
             });
         }
 
-        describe('subtype: file_share', () => {
-            const default_params =
-                fixture('slack/events.message_with_file') as EventCallbackPayload;
-
-            describe('message on support channel', () => {
-                const params = merge<EventCallbackPayload>(
-                    default_params, {
-                        'event': merge<EventCallbackPayload['event']>(
-                            default_params['event'], { channel: 'suppchannel' }
-                        )
-                    });
-
-                test_file_share_on_supported_channel(params);
+        describe('message on support channel', () => {
+            const params = merge<EventCallbackPayload>(
+                event_payload, {
+                'event': merge<EventCallbackPayload['event']>(
+                    event_payload['event'], { channel: 'suppchannel' }
+                )
             });
 
-            describe('message on product channel', () => {
-                const params = merge<EventCallbackPayload>(
-                    default_params, {
-                        'event': merge<EventCallbackPayload['event']>(
-                            default_params['event'], { channel: 'prodchannel' }
-                        )
-                    });
+            test_file_share_on_supported_channel(params);
+        });
 
-                test_file_share_on_supported_channel(params);
+        describe('message on product channel', () => {
+            const params = merge<EventCallbackPayload>(
+                event_payload, {
+                'event': merge<EventCallbackPayload['event']>(
+                    event_payload['event'], { channel: 'prodchannel' }
+                )
             });
 
-            describe('message not on support or product channel', () => {
-                const params = merge<EventCallbackPayload>(
-                    default_params, {
-                        'event': merge<EventCallbackPayload['event']>(
-                            default_params['event'], { channel: 'unknownchannel' }
-                        )
-                    });
+            test_file_share_on_supported_channel(params);
+        });
 
-                it('will be ignored', () => {
-                    return service(params).expect(200);
-                });
+        describe('message not on support or product channel', () => {
+            const params = merge<EventCallbackPayload>(
+                event_payload, {
+                'event': merge<EventCallbackPayload['event']>(
+                    event_payload['event'], { channel: 'unknownchannel' }
+                )
             });
 
-            describe('log_post_events', () => {
-                const params = merge<EventCallbackPayload>(
-                    default_params, {
-                        'event': merge<EventCallbackPayload['event']>(
-                            default_params['event'], { channel: 'unknownchannel' }
-                        )
-                    });
-
-                it('logs the received event', () => {
-                    const featureSpy = jest.spyOn(feature, 'is_enabled');
-                    const logInfoSpy = jest.spyOn(logger, 'info')
-                        .mockReturnValue({} as Logger);
-                    featureSpy.mockImplementationOnce((_) => true);
-
-                    return service(params).expect(200).then((err) => {
-                        expect(logInfoSpy).toHaveBeenCalled();
-                    });
-                });
+            it('will be ignored', () => {
+                return service(params).expect(200);
             });
         });
 
         describe('when something goes wrong', () => {
             const params = merge<EventCallbackPayload>(
-                default_params,
+                event_payload,
                 {
                     'team_id': 'BAD-TEAM-ID'
                 });
@@ -212,6 +168,93 @@ describe('POST /api/slack/event', () => {
                 });
             });
         });
+    });
 
+    describe('type: file_share event_callback in connected channel', () => {
+        const event_payload = fixture(
+            'slack/events.message_with_file_in_connected_channel'
+        ) as EventCallbackPayload;
+        const params = merge<EventCallbackPayload>(
+            event_payload, {
+            'event': merge<EventCallbackPayload['event']>(
+                event_payload['event'], { channel: 'suppchannel' }
+            )
+        });
+
+        it('add message as comment to Jira Issue', (done) => {
+            expect.assertions(2);
+            const issue_key = 'some-issue-key';
+            const checkJiraComment = (body: string): void => {
+                expect(body).toContain('tedair.gif');
+                expect(body).toContain('Egon Spengler');
+
+                done();
+            };
+
+            nock('https://example.com')
+                .post(`/rest/api/2/issue/${issue_key}/comment`, (body) => {
+                    checkJiraComment(JSON.stringify(body));
+
+                    return body;
+                }).reply(200);
+
+            nock('https://slack.com')
+                .post('/api/users.info')
+                .reply(200, user_info);
+
+            nock('https://slack.com')
+                .post('/api/files.info')
+                .reply(200, file_info);
+
+            storeGetSpy.mockImplementationOnce(() => {
+                return Promise.resolve(issue_key);
+            });
+
+            service(params).expect(200).end((err) => {
+                if (err) {
+                    return done(err);
+                }
+            });
+        });
+    });
+
+    describe('post event logging', () => {
+        const params = merge<EventCallbackPayload>(
+            event_payload, {
+            'event': merge<EventCallbackPayload['event']>(
+                event_payload['event'], { channel: 'unknownchannel' }
+            )
+        });
+
+        it('logs the received event', () => {
+            const featureSpy = jest.spyOn(feature, 'is_enabled');
+            const logInfoSpy = jest.spyOn(logger, 'info')
+                .mockReturnValue({} as Logger);
+            featureSpy.mockImplementationOnce(() => true);
+
+            return service(params).expect(200).then(() => {
+                expect(logInfoSpy).toHaveBeenCalled();
+            });
+        });
+    });
+
+    describe('type: non file_share event_callback', () => {
+        const dummy_event = {
+            ts: 'not important',
+            type: 'dummy',
+            channel: 'dummy',
+            thread_ts: 'foo-thread-ts'
+        };
+        const event_payload = {
+            type: 'event_callback',
+            token: 'dummy token',
+            subtype: 'not a file share',
+            team_id: 'T001',
+            event: dummy_event
+        } as EventCallbackPayload;
+
+        it('will be ignored', () => {
+            return service(event_payload).expect(200);
+        });
     });
 });

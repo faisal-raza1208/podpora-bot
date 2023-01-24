@@ -1,6 +1,6 @@
 import {
     ChannelThreadFileShareEvent,
-    SlackFiles,
+    SlackFile,
     Submission,
     isSlackImageFile,
     ViewSubmission,
@@ -43,7 +43,7 @@ function commandsNames(commands: Array<SlackCommand>): Array<string> {
 //         `[See on Slack](${file.permalink})`;
 // } else {
 // }
-function slackFileToText(file: SlackFiles): string {
+function slackFileToText(file: SlackFile): string {
     if (isSlackImageFile(file)) {
         return `${file.name}\n` +
             `Preview: ${file.thumb_360}\n` +

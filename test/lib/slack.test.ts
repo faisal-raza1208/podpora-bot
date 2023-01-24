@@ -145,4 +145,60 @@ describe('Slack', () => {
                 });
         });
     });
+
+    describe('#fileInfo(id)', () => {
+        const file_id = 'F123';
+        const getUserInfo = fixture('slack/users.info.response');
+        const file_info = fixture('slack/files.info');
+
+        it('returns object', (done) => {
+            expect.assertions(1);
+
+            nock('https://slack.com')
+                .post('/api/users.info')
+                .reply(200, getUserInfo);
+
+            nock('https://slack.com')
+                .post('/api/files.info')
+                .reply(200, file_info);
+
+            slack.fileInfo(file_id)
+                .then((res) => {
+                    expect(res).toEqual(
+                        expect.objectContaining({
+                            id: expect.any(String),
+                            thumb_360: expect.any(String),
+                            permalink: expect.any(String),
+                            permalink_public: expect.any(String),
+                            url_private: expect.any(String),
+                            url_private_download: expect.any(String)
+                        })
+                    );
+                    done();
+                }).catch((err) => {
+                    done();
+                });
+        });
+
+        describe('when request to fetch file info fail', () => {
+            it('throws an error', (done) => {
+                expect.assertions(1);
+
+                nock('https://slack.com')
+                    .post('/api/files.info')
+                    .reply(200, {
+                        'ok': false,
+                        'error': 'invalid_auth'
+                    });
+
+                slack.fileInfo(file_id)
+                    .then((_res) => {
+                        done();
+                    }).catch((err) => {
+                        expect(err.message).toContain('invalid_auth');
+                        done();
+                    });
+            });
+        });
+    });
 });

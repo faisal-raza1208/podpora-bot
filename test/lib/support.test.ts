@@ -158,4 +158,42 @@ describe('#addFileToJiraIssue(slack, jira, event)', () => {
             support.addFileToJiraIssue(slack, jira, event);
         });
     });
+
+    describe('when file(s) are not accessible directly', () => {
+        const event = fixture(
+            'slack/events.message_with_file_in_connected_channel'
+        ).event as ChannelThreadFileShareEvent;
+        const file_info = fixture('slack/files.info');
+        const user_info = fixture('slack/users.info.response');
+
+        it('retrieves the file using Slack API', (done) => {
+            expect.assertions(2);
+            const issue_key = 'foo-issue-key';
+            const checkJiraComment = (body: string): void => {
+                expect(body).toContain('Egon Spengler'); // from user_info
+                expect(body).toContain('tedair.gif'); // from file_info
+
+                done();
+            };
+
+            nock('https://example.com')
+                .post(`/rest/api/2/issue/${issue_key}/comment`, (body) => {
+                    checkJiraComment(JSON.stringify(body));
+                    return body;
+                }).reply(200);
+
+            nock('https://slack.com')
+                .post('/api/users.info')
+                .reply(200, user_info);
+
+            nock('https://slack.com')
+                .post('/api/files.info')
+                .reply(200, file_info);
+
+            storeGetSpy.mockImplementationOnce(() => {
+                return Promise.resolve(issue_key);
+            });
+            support.addFileToJiraIssue(slack, jira, event);
+        });
+    });
 });

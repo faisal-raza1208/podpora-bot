@@ -1,8 +1,10 @@
 import {
     View,
     WebAPICallResult,
+    FilesInfoResponse,
     WebClient
 } from '@slack/web-api';
+
 import logger from '../util/logger';
 import { SlackOptions } from '../util/secrets';
 
@@ -113,6 +115,16 @@ class Slack {
             return Promise.resolve(user.real_name);
         }).catch(() => {
             throw new Error('Unexpected error #userName');
+        });
+    }
+
+    fileInfo(file_id: string): Promise<FilesInfoResponse['file']> {
+        return this.client.files.info({
+            file: file_id
+        }).then((response: FilesInfoResponse) => {
+            return Promise.resolve(response.file);
+        }).catch((err) => {
+            throw new Error(`Unexpected error in #fileInfo: ${err}`);
         });
     }
 }
