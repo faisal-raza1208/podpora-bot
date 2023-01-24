@@ -196,6 +196,5 @@ const product = {
 };
 
 export {
-    fileShareEventToIssueComment,
     product
 };

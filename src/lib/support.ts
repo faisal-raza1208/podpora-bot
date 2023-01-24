@@ -217,7 +217,6 @@ const support = {
 };
 
 export {
-    fileShareEventToIssueComment,
     Submission,
     support
 };
