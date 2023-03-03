@@ -223,8 +223,7 @@ Submitted by: ${slack_user.name}`;
                     'sl_listing_block',
                     'sl_shift_block',
                     'sl_test_data_block',
-                    'ss_device_block',
-                    'ss_urgency_block'
+                    'ss_device_block'
                 ]));
             });
         });
