@@ -199,6 +199,7 @@ Submitted by: ${user.name}`;
                 `*Worker ID*: ${submission.worker}\n` +
                 `*Listing ID*: ${submission.listing}\n` +
                 `*Shift ID*: ${submission.shift}\n` +
+                `*Foo test*: ${submission.shift}\n` +
                 `*Test data*: ${submission.test_data}\n` +
                 `*Device*: ${submission.device}`;
         } else {

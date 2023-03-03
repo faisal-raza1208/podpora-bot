@@ -183,7 +183,8 @@ Submitted by: ${slack_user.name}`;
                     test_data: 'Test data',
                     region: 'Region/Country',
                     device: 'Device',
-                    urgency: 'Test O'
+                    urgency: 'Test O',
+                    foo: 'Foo test'
                 };
 
                 it('returns a string', () => {
@@ -224,7 +225,8 @@ Submitted by: ${slack_user.name}`;
                     'sl_shift_block',
                     'sl_test_data_block',
                     'ss_device_block',
-                    'ss_urgency_block'
+                    'ss_urgency_block',
+                    'sl_foo_data_block'
                 ]));
             });
         });

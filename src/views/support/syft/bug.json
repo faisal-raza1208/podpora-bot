@@ -88,6 +88,24 @@
 
     {
       "type": "input",
+      "block_id": "sl_foo_data_block",
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "sl_foo_data",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Foo test"
+        }
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Foo test"
+      },
+      "optional": true
+    },
+
+    {
+      "type": "input",
       "block_id": "ss_urgency_block",
       "element": {
         "action_id": "ss_urgency",
