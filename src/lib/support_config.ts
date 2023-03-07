@@ -150,6 +150,7 @@ configs.syft = {
             let product_area_submission = '';
             if (feature.is_enabled('bug_report_with_product_area_select_box')) {
                 product_area_submission = `Product Area: ${submission.product_area}`;
+                fields.flexDomain = submission.product_area;
             }
             fields.issuetype.name = 'Bug';
             fields.description = `${desc}

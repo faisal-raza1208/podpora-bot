@@ -126,7 +126,8 @@ Submitted by: ${slack_user.name}`;
                             summary: submission.title,
                             issuetype: { name: 'Bug' },
                             description: desc,
-                            labels: ['support']
+                            labels: ['support'],
+                            flexDomain: submission.product_area
                         }
                     });
                 });
