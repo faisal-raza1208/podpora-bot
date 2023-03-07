@@ -145,6 +145,13 @@
               "text": "Other"
             },
             "value": "other"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "Platform & Enabling"
+            },
+            "value": "platform_and_billing"
           }
         ]
       },
