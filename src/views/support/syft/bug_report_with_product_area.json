@@ -142,16 +142,16 @@
           {
             "text": {
               "type": "plain_text",
-              "text": "Other"
+              "text": "Platform & Enabling"
             },
-            "value": "other"
+            "value": "platform_and_enabling"
           },
           {
             "text": {
               "type": "plain_text",
-              "text": "Platform & Enabling"
+              "text": "Other"
             },
-            "value": "platform_and_billing"
+            "value": "other"
           }
         ]
       },
