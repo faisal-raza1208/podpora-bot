@@ -175,8 +175,8 @@ Submitted by: ${slack_user.name}`;
 
                 it('matches expected object with product area included', () => {
                     const featureSpy = jest.spyOn(feature, 'is_enabled');
-                    featureSpy.mockImplementationOnce(() => true).mockImplementationOnce(() => true);
-                    console.log('<<<<<< feature >>>>', 'flex_domain_feature');
+                    featureSpy.mockImplementationOnce(() => true)
+                              .mockImplementationOnce(() => true);
 
                     expect(
                         config.issueParams(submission, slack_user, request_type)
@@ -187,7 +187,7 @@ Submitted by: ${slack_user.name}`;
                             issuetype: { name: 'Bug' },
                             description: desc,
                             labels: ['support'],
-                            customfield_10773: { value: submission.product_area } // customfield_10773 is "Flex Domain"
+                            customfield_10773: { value: submission.product_area } // "Flex Domain"
                         }
                     });
                 });
