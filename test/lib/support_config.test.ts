@@ -25,7 +25,7 @@ describe('supportConfig', () => {
                     description: 'Test B',
                     currently: 'Test C',
                     expected: 'Test D',
-                    platform: 'Test E',
+                    platform: 'Test E,Test Q',
                     region: 'Test L',
                     version: 'Test F',
                     employer: 'Test G',
@@ -66,7 +66,11 @@ Submitted by: ${slack_user.name}`;
                             summary: submission.title,
                             issuetype: { name: 'Bug' },
                             description: desc,
-                            labels: ['support']
+                            labels: ['support'],
+                            components: [
+                                { name: 'Test E' },
+                                { name: 'Test Q' }
+                            ]
                         }
                     });
                 });
@@ -120,7 +124,8 @@ Submitted by: ${slack_user.name}`;
                             summary: submission.title,
                             issuetype: { name: 'Bug' },
                             description: desc,
-                            labels: ['support']
+                            labels: ['support'],
+                            components: [{ name: 'Test E' }]
                         }
                     });
                 });
@@ -179,7 +184,8 @@ Submitted by: ${slack_user.name}`;
                             issuetype: { name: 'Bug' },
                             description: desc,
                             labels: ['support'],
-                            customfield_10773: { value: submission.product_area } // "Flex Domain"
+                            customfield_10773: { value: submission.product_area }, // "Flex Domain"
+                            components: [{ name: 'Test E' }]
                         }
                     });
                 });
@@ -213,7 +219,7 @@ Submitted by: ${slack_user.name}`;
                             summary: submission.title,
                             issuetype: { name: 'Data Request' },
                             description: desc,
-                            components: [{ name: 'Back-end' }],
+                            components: [{ name: 'Backend' }],
                             labels: ['support']
                         }
                     });
@@ -252,7 +258,7 @@ Submitted by: ${slack_user.name}`;
                             summary: first_part_of_title,
                             issuetype: { name: 'Data Request' },
                             description: desc,
-                            components: [{ name: 'Back-end' }],
+                            components: [{ name: 'Backend' }],
                             labels: ['support']
                         }
                     });
