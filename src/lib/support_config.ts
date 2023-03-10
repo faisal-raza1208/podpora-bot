@@ -142,12 +142,14 @@ configs.syft = {
         const result: CreateIssue = { fields: fields };
 
         if (request_type === 'bug') {
+            const platforms = (submission.platform as string);
             if (feature.is_enabled('bug_report_with_flex_domain_custom_field')) {
                 // Setting customfield_10773 (Flex Domain)
                 fields.customfield_10773 = { value: submission.product_area };
             }
 
             fields.issuetype.name = 'Bug';
+            fields.components = platforms.split(',').map((str) => ({ name: str }));
             fields.description = `${desc}
 
 Currently:
@@ -180,7 +182,7 @@ Urgency: ${submission.urgency}
 Region/Country: ${submission.region}
 
 Submitted by: ${user.name}`;
-            fields.components = [{ name: 'Back-end' }];
+            fields.components = [{ name: 'Backend' }];
         }
 
         return result;
