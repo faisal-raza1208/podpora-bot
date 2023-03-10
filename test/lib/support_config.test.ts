@@ -213,7 +213,7 @@ Submitted by: ${slack_user.name}`;
                             summary: submission.title,
                             issuetype: { name: 'Data Request' },
                             description: desc,
-                            components: [{ name: 'Back-end' }],
+                            components: [{ name: 'Backend' }],
                             labels: ['support']
                         }
                     });
@@ -252,7 +252,7 @@ Submitted by: ${slack_user.name}`;
                             summary: first_part_of_title,
                             issuetype: { name: 'Data Request' },
                             description: desc,
-                            components: [{ name: 'Back-end' }],
+                            components: [{ name: 'Backend' }],
                             labels: ['support']
                         }
                     });
