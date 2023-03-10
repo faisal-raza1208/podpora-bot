@@ -24,6 +24,7 @@ function commandsHelpText(commands: Array<SlackCommand>): string {
 }
 
 const configs: { [index: string]: Config } = {};
+const data = 'data';
 
 configs.default = {
     commands: [
@@ -120,7 +121,12 @@ configs.syft = {
         return commandsHelpText(this.commands);
     },
     view: function(key: string): View {
-        return views.support.syft[key];
+        let template_name = key;
+        if (feature.is_enabled('data_request_with_product_area_select_box') && key === data) {
+            template_name = 'data_request_with_product_area';
+        }
+
+        return views.support.syft[template_name];
     },
     viewToSubmission: viewToSubmission,
     issueParams: function(
@@ -175,12 +181,22 @@ Test data: ${submission.test_data}
 Submitted by: ${user.name}`;
 
         } else {
+            let product_area_submission = '';
+            if (feature.is_enabled('data_request_with_product_area_select_box')) {
+                product_area_submission = `Product Area: ${submission.product_area}`;
+
+                if (feature.is_enabled('data_request_with_flex_domain_custom_field')) {
+                    // Setting customfield_10773 (Flex Domain)
+                    fields.customfield_10773 = { value: submission.product_area };
+                }
+            }
             fields.issuetype.name = 'Data Request';
             fields.description = `${desc}
 
 Reason:
 ${submission.reason}
 
+${product_area_submission}
 Urgency: ${submission.urgency}
 Region/Country: ${submission.region}
 
@@ -212,9 +228,14 @@ Submitted by: ${user.name}`;
                 `*Shift ID*: ${submission.shift}\n` +
                 `*Test data*: ${submission.test_data}`;
         } else {
+            let product_area_submission = '';
+            if (feature.is_enabled('data_request_with_product_area_select_box')) {
+                product_area_submission = `*Product Area*: ${submission.product_area}\n`;
+            }
             return `<@${user.id}> has submitted a data request:\n\n` +
                 `*${submission.title}*\n\n${submission.description}\n\n` +
                 `*Reason*:\n${submission.reason}\n` +
+                product_area_submission +
                 `*Urgency*: ${submission.urgency}\n` +
                 `*Region/Country*: ${submission.region}`;
         }
