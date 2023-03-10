@@ -180,7 +180,7 @@ Urgency: ${submission.urgency}
 Region/Country: ${submission.region}
 
 Submitted by: ${user.name}`;
-            fields.components = [{ name: 'Back-end' }];
+            fields.components = [{ name: 'Backend' }];
         }
 
         return result;
