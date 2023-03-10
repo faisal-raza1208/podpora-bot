@@ -285,7 +285,7 @@ Submitted by: ${slack_user.name}`;
                 });
             });
 
-            describe('data request with data_request_with_product_area_select_box feature enabled', () => {
+            describe('data req with data_request_with_product_area_select_box flag enabled', () => {
                 const request_type = 'data';
                 const submission = {
                     title: 'Test A',
@@ -325,7 +325,7 @@ Submitted by: ${slack_user.name}`;
                 });
             });
 
-            describe('data request with data_request_with_product_area_select_box feature enabled', () => {
+            describe('data req with data_request_with_product_area_select_box flag enabled', () => {
                 const request_type = 'data';
                 const submission = {
                     title: 'Test A',
@@ -426,7 +426,7 @@ Submitted by: ${slack_user.name}`;
                     expect(result).toContain('Test urgency');
                 });
 
-                describe('data request with data_request_with_product_area_select_box feature enabled', () => {
+                describe('data with data_request_with_product_area_select_box flag enabled', () => {
                     const submission = {
                         title: 'Test title',
                         description: 'Test description',
