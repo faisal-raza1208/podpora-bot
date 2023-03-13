@@ -147,6 +147,11 @@ configs.syft = {
                 fields.customfield_10773 = { value: submission.product_area };
             }
 
+            if (feature.is_enabled('bug_report_with_components_field')) {
+                const platforms = (submission.platform as string);
+                fields.components = platforms.split(',').map((platform) => ({ name: platform }));
+            }
+
             fields.issuetype.name = 'Bug';
             fields.description = `${desc}
 
