@@ -24,17 +24,18 @@ function commandsHelpText(commands: Array<SlackCommand>): string {
 }
 
 const configs: { [index: string]: Config } = {};
-const data = 'data';
+const dataRequestTypeName = 'data';
+const bugTypeName = 'bug';
 
 configs.default = {
     commands: [
         {
-            name: 'data',
+            name: dataRequestTypeName,
             desc: 'Submit a request for data',
             example: '/support data'
         },
         {
-            name: 'bug',
+            name: bugTypeName,
             desc: 'Submit a bug report',
             example: '/support bug'
         }
@@ -57,7 +58,7 @@ configs.default = {
         let desc = title_and_desc.desc;
         let issue_type: string;
 
-        if (request_type === 'bug') {
+        if (request_type === bugTypeName) {
             issue_type = 'Bug';
             desc = `${desc}
 
@@ -90,7 +91,7 @@ Submitted by: ${user.name}`;
         user: SlackUser,
         request_type: RequestType
     ): string {
-        if (request_type === 'bug') {
+        if (request_type === bugTypeName) {
             return `<@${user.id}> has submitted a bug report:\n\n` +
                 `*${submission.title}*\n\n` +
                 `*Steps to Reproduce*\n\n${submission.description}\n\n` +
@@ -107,12 +108,12 @@ Submitted by: ${user.name}`;
 configs.syft = {
     commands: [
         {
-            name: 'data',
+            name: dataRequestTypeName,
             desc: 'Submit a request for data',
             example: '/support data'
         },
         {
-            name: 'bug',
+            name: bugTypeName,
             desc: 'Submit a bug report',
             example: '/support bug'
         }
@@ -122,7 +123,8 @@ configs.syft = {
     },
     view: function(key: string): View {
         let template_name = key;
-        if (feature.is_enabled('data_request_with_product_area_select_box') && key === data) {
+        if (feature.is_enabled('data_request_with_product_area_select_box')
+            && key === dataRequestTypeName) {
             template_name = 'data_request_with_product_area';
         }
 
@@ -147,7 +149,7 @@ configs.syft = {
         };
         const result: CreateIssue = { fields: fields };
 
-        if (request_type === 'bug') {
+        if (request_type === bugTypeName) {
             if (feature.is_enabled('bug_report_with_flex_domain_custom_field')) {
                 // Setting customfield_10773 (Flex Domain)
                 fields.customfield_10773 = { value: submission.product_area };
@@ -211,7 +213,7 @@ Submitted by: ${user.name}`;
         user: SlackUser,
         request_type: RequestType
     ): string {
-        if (request_type === 'bug') {
+        if (request_type === bugTypeName) {
             return `<@${user.id}> has submitted a bug report:\n\n` +
                 `*${submission.title}*\n\n` +
                 `*Steps to Reproduce*:\n${submission.description}\n\n` +
